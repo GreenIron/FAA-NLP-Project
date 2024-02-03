@@ -44,7 +44,7 @@ This is pretty straghtforward except for several highpucs:
 
 ### First shot: STC
 
-#### metadate only
+#### metadatA only
 
 #### text content
 
