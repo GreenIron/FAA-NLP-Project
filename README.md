@@ -1,4 +1,93 @@
-### TODO
+# A NLP project on FAA documents
+
+## Abstract
+For the past 20 months I've been working on a personal NLP project dealing with FAA documentation. This included use case definition, data source identification, data collection, cleaning, data mining and pipeline implementation.
+
+## Introduction and motivation
+While aviation is a heavy producer of documentation, most of the aviation-related database poublicly available (kaggle, huggingface, google data) is about unformatted tabular data and not about NLP. On the contrary legal has a few datasets available.
+While most fot he aviation data has been already available from the regualtor's webiste, data collection was not straigforward.
+FAA has recently a moderm platform to browse all the publicly available FAA documentation: https://drs.faa.gov/. This platform offers tremendous capabilities and offers an API (one of the many DOT platforms to offer this) to programativalyy acces its docuymentation.
+Non gov platforms like AHST offer also high qulity and formatter, but haev no API,.
+
+## Why aviation data
+I worjk ni aviation, the starting block of any ML project is to get to intimately know the data. Since I work in aviation, I've a professional interest in knowing more about all types of documents and contant that the FAA (or its representatives) produces. I my self consumes and produces avation documentation.
+
+Availabilty of datasets opluly avaialble has always been a proof of maturiyty.
+
+From a ML perspective, aviation data offers lots of benefits:
+* it's more available. To the limit of business protection, there is an obivous benefit in sharing knowkledge.
+* generally avitation data is formatted and of good quality (not so much with operational data).
+** formatted: FAA forms
+** quality Order_1000.36 FAA WRITING STANDARDS
+
+Parler aussi du fait qu il y a des qa tables nd a lors des sollicitations.
+
+Big emphasis on traceabiliuty and compluiacn, which structuraly produces high quality data (compares to pretty much anything else) with lots of metadata.
+
+CONS: lots of temporal drifts.
+
+## Methods and tools
+The whole project in written in Python.
+
+For data scrapping:
+1/ Get familiar with the API: https://drs.faa.gov/help/helpdetails
+2/ Download the DRS Document Types Metadata Mapping file from https://drs.faa.gov/help/helpdetails
+3/ Collect the index table for each DRS doc type
+4/ Collect each file or text from each document found in each index table
+
+This is pretty straghtforward except for several highpucs:
+1/ DRS changed a little bit, forcing me to adapt my file collection code
+2/ Some files caused some issue (files with special characters like &)
+3/  The data scrapping portion relies on Selenium. After some times my IP address got banned, so I started using a VPN to finish my data collection
+
+## Results on data collection
+
+### First shot: STC
+
+#### metadate only
+
+#### text content
+
+why STC?
+
+tuens out that it was not a good idea: why?
+
+Reduced scope and subset of doc types 
+
+
+General overview of DRS data
+Getting FAA data from the DRS
+
+Case study on STC
+
+Some metrics
+
+### DRS and the other non DRS documents
+
+
+
+For the data .
+
+FAA API, data and DRS
+
+
+Is that suitable for nlp? Os that suitable for nlp on a personal computer?
+
+
+Challenge with DRS data
+What's not in FAA DRS
+Getting to know the FAA DRS better
+
+Parsibt Drs docs
+
+Parsing non Drs docs
+
+Is that suitable for NLP?
+
+#
+#
+
+# TODO
 * Reorganiser le cod le code
 * Relancer tout
 * faire la database de texte
@@ -51,7 +140,7 @@
       * Purpose: This InFO informs air carriers of the availability of the Department of Transportation’s (DOT) National Aviation Resource Manual for Quarantinable Diseases. 
       * SUBJECT: DOT
 
-TODO:
+## TODO:
 * STC content (limitations/correl;ations):
   * refaire une analyse avec google vision sur fichiers qui ont d'econne seulement: le faire avec les filters. Se faire un fichier excel pour releceture plus simple
 * Identify pdfs requiring google vision by type: STC, CAR, 
