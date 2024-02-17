@@ -61,7 +61,7 @@ The following data could also be an excellent source of data for an NLP project.
 
 ### Why STC certificates
 STC is the master document that defines the type design of an aircract modification, it's the final document (except for the PMA) that gets issued at the end of a new design project. I happen to be working a lot with STCs through my work, so I knew that those enjoyed lots of nice properties:
-* small (<1000 tokens)
+* small (<1000 tokens so LLM can be locally fine-tuned)
 * rigid structure
 * informative
 * diverse
@@ -74,10 +74,11 @@ There will be as many rows for an STC as there are issuance. Date of STC (re)-is
 
 * Number of STC (documents):
   * indexed: 76416
-  * with PDF: 43818
+  * with PDF (usable): 43818
 * Sanity check:
   * only one broken PDF (SA00765DE)
   * very few abnormal dates (<50)
+  * very few typos with the headers
 
 * Rotorcraft STCs reissuance period: is about 3 years, but we can see actually that the period is more like 1.6 years and that ther is another peak around 7 yeahs (~1.7*4). It could be interesting to filter by ATA, company, ACO... to try to consolidate this patter. This other interesting observation is that is period is not consitent when we switch to airplanes.
 
@@ -112,97 +113,47 @@ There will be as many rows for an STC as there are issuance. Date of STC (re)-is
 
 ![plot](./images/20_rotorcraft_stcStatusDate_by_day_of_week.png)
 
-* Histoirical helicopter STCs between 1990 and 2000: a big surprise to me was that American Eurocopter (my curent company and now Airbus Helicopters, Inc.) was one of the largest issuers of STC certificates (but a detailed analysis of the STCs show that those are not complex). Cheers to the team of engineers, because I'm walking on their shoulders everyday. It's also worth exploring noting that the different companies have very different business models (ODA doing worth for third parties, ODA doing only internal work, companies with core products working with ACO).
+* Historical helicopter STCs between 1990 and 2000: a big surprise to me was that American Eurocopter (my curent company and now Airbus Helicopters, Inc.) was one of the largest issuers of STC certificates (but a detailed analysis of the STCs show that those are not complex). Cheers to the team of engineers, because I'm walking on their shoulders everyday. It's also worth exploring noting that the different companies have very different business models (ODA doing worth for third parties, ODA doing only internal work, companies with core products working with ACO).
 ![plot](./images/20_STC_by_STC_holder_helicopter_1900.png)
 
-* Historical and Current STCs: the distriution is quite expected, but most surprising is that the distribution is not reflecting the relative weight of those markets (large multi-engine should be significantly highier).
+* Historical and Current STCs: the distribution is quite expected, but most surprising is that the distribution is not reflecting the relative weight of those markets (large multi-engine should be significantly highier).
 
 ![plot](./images/20_STCs_by_stcProductSubType.png)
 
-I've looked at more histograms and I could keep going on for many more pages (e.g. looking at time drifts, comparing single engine vs. multi-engines...), but that's enough histograms for today (and it's still a mandatory quality gate for a ML project).
+I've looked at more histograms and I could keep going on for many more pages (e.g. looking at time drifts, comparing single engine vs. multi-engines, focusing on a region or on a company...), but that's enough histograms for today.
 
-### Adding text content
-STC textual data was decoded using a mix of from pypdf and PyPDF2 for pure PDF decoding and google cloud platform OCR when only a scan was available.
+### Text analysis
+#### Getting to know the data
+STC textual data was decoded using a mix of from pypdf and PyPDF2 for pure PDF decoding and Google Cloud Platform OCR when only a scan was available.
+GCP OCR proved to quite uneffective on scanned pdfs (SA00005MC-D) yielding very odd artifacts. GCP OCR does not offer any options to adjust performances, so the only workaround was to perform so image preprocessing.
 
+STCs are well defined and the format has remained pretty much the same over the years, but the main ones from a textual standpoint the Descriptions and the Limitations/Conditions. Let's look at some examples first:
+* accross the ages: [old](https://drs.faa.gov/browse/excelExternalWindow/BA172489A7E9DA1586257CD30047CF76.0001?modalOpened=true) , [recent](https://drs.faa.gov/browse/excelExternalWindow/DRSDOCID128075530320230314172310.0001)
+* description: [short](https://drs.faa.gov/browse/excelExternalWindow/CA21490D878D3C63862574C600496658.0001?modalOpened=true), [average](https://drs.faa.gov/browse/excelExternalWindow/3FE1351336C0748F8625831400585C06.0001?modalOpened=true), [long](https://drs.faa.gov/browse/excelExternalWindow/17914C2EEDFFC8C98625804300770386.0001?modalOpened=true)
+* limitations/Conditions: [short](https://drs.faa.gov/browse/excelExternalWindow/DRSDOCID125280334620221128154006.0001?modalOpened=true), [average](https://drs.faa.gov/browse/excelExternalWindow/3FE1351336C0748F8625831400585C06.0001?modalOpened=true), [long](https://drs.faa.gov/browse/excelExternalWindow/EF198F621A3B2AA9862585D90044ACBF.0001?modalOpened=true)
 
-oparler de la quantiti'e de fichier, noom,bre de mots,,,
+The following two pictures show the word distributions for those two fields. Description is a Gama distribution, while Limitations/Conditions is more multimodal.
 
-While LLM now accept long token
-
-I started working on ATA, but I dropped for good reasons.
-
-
-This is a nice Gama distribution (as expected).
-
-olllama
-
-lmsutio
-
-22
-
-![plot](./images/22_limitations_vs_descriptions.png)
 ![plot](./images/22_number_of_words_in_description.png)
+
 ![plot](./images/22_number_of_words_in_limitations.png)
 
+#### (Lack of) Results
+The main findings are that:
+* There is some overlap between what's a Description vs. a Limitations/Conditions. For example the RFMS and ICA can be found in one on the other.
+* Limitations/Conditions is sometimes used to register flight manual limitations or configuration limitations.
+
+I failed to find a decent LLM application:
+* zero shot using 7B LLMs (Ollama) yieleded poor results (guessing meta data based on Description, Limitations/Conditions)
+* ATA-classification (using DRS MMEL and JASC) performances were poor
+* overall I could not find any interresting use cases (e.g.. guess the Description based on Limitations/Conditions)
+
+The key problems might be that the STC Description and Limitations/Conditions are not informative enough and are quite independant between each others and indepndant from the metadata. Another problem is that the Description is often based on the commercial name of the modification/equipment, which is too much of a specific usage domain. We would need to scrapp data from all aeronautical companies and fine tune the LLM first (which is doable).
+Following picture shows the lack of correlation between Description and a Limitations/Conditions. It's worth noting that there are some obvious vertical and horizontal bars. Those might be linked to "standard sentences". 
 
 
-abnormal dates... just a dizen
+![plot](./images/22_limitations_vs_descriptions.png)
 
-
-* Number of STCs by stcProductSubType all years
-* Number of STCs by stcProductSubType by decade
-* Number of STCs by Holder all years
-* Number of STCs by Office all years
-FW behind now
-* Number of STCs by Office by decade
-lots of other comments possibnle, but stop here.
-* STC dates
-last modified date is very odd
-Same but by decade
-Delta time between reissuances
-Number of reissuances
-
-
-#### text content
-
-no useful pattenrs. but it's normal. The two fielsds shsare little common data. There are some mandatory fields, very well formatted.
-
-
-very few shared information
-
-
-lots of very unique way to designate something eimislar. Eg radio called by P/M
-
-variations on the meaning of waht's a limitation and hat's a definiftion
-
-edecodin in google cloud platform
-
-number os usefl (43818, 30)
-
-
-pas grand chose
-
-qques parrters = l;igne droite
-
-interessant de' explorere les cas dans l' enveloppe
-
-
-dire que c' est fait des essais avec LLM.
-
-tuens out that it was not a good idea: why?
-
-Reduced scope and subset of doc types 
-
-
-General overview of DRS data
-Getting FAA data from the DRS
-
-Case study on STC
-
-Some metrics
-
-
-talk about the few problems in the dates
 
 ## DRS and the other non DRS documents
 
