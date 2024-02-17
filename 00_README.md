@@ -69,30 +69,42 @@ STC is the master document that defines the type design of an aircract modificat
 
 ### Metadata only
 The DRS metadadata already offers a wealth of information before even starting exploring the text content. I've only analysed a fraction of the metadata and the following is another fraction of this analysis. It's really a high-level analysis to get to know the data better, but I didn't push towards more complex data mining methods (dimensiality reduction, clustering... scikit-learn is the best source I know to start a ML project). Maybe something for later.
-A big surprise to me was that American Eurocopter (my curent company and now Airbus Helicopters, Inc.) was one of the largest issuers of STC certificates (but a detailed analysis of the STCs show that those are not complex).
+There will be as many rows for an STC as there are issuance. Date of STC (re)-issuance is given by "stcStatusDate". A STC is reissued for example to add a new configuration (e.g. obsolescence). Note that an STC can be updated (e.g. minor change for editorial changed) and not reissues and in that case the lates update will be indicated in the field "docLastModifiedDate".
+"drs:stcAplicationDate" corresponds to the application date for the firs STC issuance.
+
 * Number of STC (documents):
   * indexed: 76416
   * with PDF: 43818
 * Sanity check:
   * only one broken PDF (SA00765DE)
   * very few abnormal dates (<50)
-* 
 
-Lots of those distribtuion follow a exponential. Which is a memory less
+* Rotorcraft STCs reissuance period: is about 3 years, but we can see actually that the period is more like 1.6 years and that ther is another peak around 7 yeahs (~1.7*4). It could be interesting to filter by ATA, company, ACO... to try to consolidate this patter. This other interesting observation is that is period is not consitent when we switch to airplanes.
 
-* Number of STC re-issuance for rotorcrafts: 
+![plot](./images/20_rotorcraft_reissuance.png)
+
+* Number of STC re-issuance for rotorcrafts: the majority of STCs are not reissued.
 
 ![plot](./images/20_number_of_STC_issuances_for_rotorcraft.png)
-* 
-![plot](./images/20_Number_of_STCs_by_Office_2020_rotorcraft.png)
-* 
+
+* Number of current and historical STCs for the different FAA offices: it's quite expected to see Fort Worth on top of the list.
+
 ![plot](./images/20_Number_of_STCs_by_Office_all_years.png)
-* 
-![plot](./images/20_Number_of_STCs_by_Office_all_years_rotorcraft.png)
-* Histogram of year of application: I was surprise to observe that rotorcraft STCs have only been decreasing since 2008 (US financial crisis)
+
+* Current STCs re-issuance for the different FAA offices since 2020: interrestingly Fort Worth is not on the top position while the group of other top FAA offices remains the same.
+
+![plot](./images/20_Number_of_STCs_by_Office_2020_rotorcraft.png)
+
+* Histogram of year of initial applications: I was surprise to observe that new rotorcraft STCs have only been decreasing since 2008 (US financial crisis, but it might be just a correlation).
+
 ![plot](./images/20_rotorcraft_stcApplicationDate_by_year.png)
 
-* Histogram of application day of the week: I would have expected a flat distribution, but it's intereting to see a peak at the beginning/end of the month. This might be driven by company business objectives. Harder to explain is the peak in the middle of the month.
+
+* Histogram of year of STC reissuance: we can still see the decrease, but it's unclear what caused those 3 peaks without drilling more into the data.
+
+![plot](./images/20_rotorcraft_stcStatusDate_by_year.png)
+
+* Histogram of application day of the week: I would have expected a flat distribution, but it's interresting to see a peak at the beginning/end of the month. This might be driven by company business objectives. Harder to explain is the peak in the middle of the month.
 
 ![plot](./images/20_rotorcraft_stcStatusDate_by_day.png)
 
@@ -100,52 +112,14 @@ Lots of those distribtuion follow a exponential. Which is a memory less
 
 ![plot](./images/20_rotorcraft_stcStatusDate_by_day_of_week.png)
 
-* 
-![plot](./images/20_rotorcraft_stcStatusDate_by_year.png)
-
-
-tal about that some of those STC owner have differen bsuiness models
-
-* 
+* Histoirical helicopter STCs between 1990 and 2000: a big surprise to me was that American Eurocopter (my curent company and now Airbus Helicopters, Inc.) was one of the largest issuers of STC certificates (but a detailed analysis of the STCs show that those are not complex). Cheers to the team of engineers, because I'm walking on their shoulders everyday. It's also worth exploring noting that the different companies have very different business models (ODA doing worth for third parties, ODA doing only internal work, companies with core products working with ACO).
 ![plot](./images/20_STC_by_STC_holder_helicopter_1900.png)
-* 
-![plot](./images/20_STC_by_STC_holder_large_2010.png)
 
-* 
+* Historical and Current STCs: the distriution is quite expected, but most surprising is that the distribution is not reflecting the relative weight of those markets (large multi-engine should be significantly highier).
+
 ![plot](./images/20_STCs_by_stcProductSubType.png)
 
-
-* check dates all dates
-* check missing data, only somne fields
-* check coherence between drs:status and drs:stcStatus
-* check choehrence between drs:stcProductType and drs:stcProductSubType
-
-* Basic statitics to see balance: # STC (drs:chronicleId) vs. 
-  *  holder (drs:stcHolder)
-  *  type of part (drs:stcProductType)
-  *  primaryRespOffice (drs:primaryRespOffice)
-  *  time (drs:stcStatusDate drs:stcAplicationDate  docLastModifiedDate)
-  *  stcProductType (drs:stcProductType)
-
-
-
-
-
-very very few c
-
-this distrobutio0n applies all the time: STCs by stcProductSubType from
-
-does not reflect the money 
-
-large multiengine haev a differetntdistributuion
-
-
-also explore drisft over time
-
-20
-
-
-
+I've looked at more histograms and I could keep going on for many more pages (e.g. looking at time drifts, comparing single engine vs. multi-engines...), but that's enough histograms for today (and it's still a mandatory quality gate for a ML project).
 
 ### Adding text content
 STC textual data was decoded using a mix of from pypdf and PyPDF2 for pure PDF decoding and google cloud platform OCR when only a scan was available.
@@ -155,7 +129,10 @@ oparler de la quantiti'e de fichier, noom,bre de mots,,,
 
 While LLM now accept long token
 
+I started working on ATA, but I dropped for good reasons.
 
+
+This is a nice Gama distribution (as expected).
 
 olllama
 
