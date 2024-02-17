@@ -32,8 +32,8 @@ Attempt | #1 | #2 | #3 | #4 | #5 | #6 | #7 | #8 | #9 | #10 | #11
 --- | --- | --- | --- |--- |--- |--- |--- |--- |--- |--- |---
 Seconds | 301 | 283 | 290 | 286 | 289 | 285 | 287 | 287 | 272 | 276 | 269
 
-## Data Collection
-### Results on data collection
+# Data Collection
+## Results on data collection
 Those are the steps that I followed for collecting data from DRS:
 1. Get familiar with the API: https://drs.faa.gov/help/helpdetails
 2. Download the DRS Document Types Metadata Mapping file from https://drs.faa.gov/help/helpdetails
@@ -43,13 +43,13 @@ This is pretty straghtforward except for several hard points:
 1. DRS website changed a little bit, so the code had to follow
 2. Some files caused some issue (files with special characters like &)
 3. The data scrapping portion relies on Selenium. After some times my IP address got banned, so I started using a VPN to finish my data collection
-4. On top of the main file, DRS offers also "Attachments/Public Comments" documents
+4. On top of the main file, DRS offers also "Attachments/Public Comments" documents. As of today those are not searchable with DRS
 5. There also non-pdf and non-text files
 Retrieving data from FAA DRS proved to be very convenient.
 
 Note that Aeronautical Information Manual (AIM) and Aeronautical Information Publication (AIP) are two basic references in aviation. They are not in DRS, so I've added them manually to the dataset.
 
-### Other sources of data worth exploring
+## Other sources of data worth exploring
 The following data could also be an excellent source of data for an NLP project. I've not had the time to focus too much on those, but they would be well suited for a simple use case:
 * public comments are organized as Q&A tables. There are generally very nicelly formatted so that a tabular extrator libraty should work (sometimes alswer formatted in csv like files). The address pretty much all the time complex questions (referrence to other FAA documents or industry practive). The answer provided by the FAA is not "right" like what can be found in other factual Q&A database, but the clarify the intent of a guidance.
 * AC 43-16A - General Aviation Maintenance Alerts offers also an excelent source of maintenance database
@@ -57,9 +57,9 @@ The following data could also be an excellent source of data for an NLP project.
 * FAA DER ressources for LLM (learning documents and Q&A)
 * all the DRS missing data and all the documents which were discontinued to exist
 
-## A first try with STC (Supplemental Type Certificate)
+# A first try with STC (Supplemental Type Certificate)
 
-### Why STC certificates
+## Why STC certificates
 STC is the master document that defines the type design of an aircract modification, it's the final document (except for the PMA) that gets issued at the end of a new design project. I happen to be working a lot with STCs through my work, so I knew that those enjoyed lots of nice properties:
 * small (<1000 tokens so LLM can be locally fine-tuned)
 * rigid structure
@@ -67,7 +67,7 @@ STC is the master document that defines the type design of an aircract modificat
 * diverse
 * long history
 
-### Metadata only
+## Metadata only
 The DRS metadadata already offers a wealth of information before even starting exploring the text content. I've only analysed a fraction of the metadata and the following is another fraction of this analysis. It's really a high-level analysis to get to know the data better, but I didn't push towards more complex data mining methods (dimensiality reduction, clustering... scikit-learn is the best source I know to start a ML project). Maybe something for later.
 There will be as many rows for an STC as there are issuance. Date of STC (re)-issuance is given by "stcStatusDate". A STC is reissued for example to add a new configuration (e.g. obsolescence). Note that an STC can be updated (e.g. minor change for editorial changed) and not reissues and in that case the lates update will be indicated in the field "docLastModifiedDate".
 "drs:stcAplicationDate" corresponds to the application date for the firs STC issuance.
@@ -122,8 +122,8 @@ There will be as many rows for an STC as there are issuance. Date of STC (re)-is
 
 I've looked at more histograms and I could keep going on for many more pages (e.g. looking at time drifts, comparing single engine vs. multi-engines, focusing on a region or on a company...), but that's enough histograms for today.
 
-### Text analysis
-#### Getting to know the data
+## Text analysis
+### Getting to know the data
 STC textual data was decoded using a mix of from pypdf and PyPDF2 for pure PDF decoding and Google Cloud Platform OCR when only a scan was available.
 GCP OCR proved to quite uneffective on scanned pdfs (SA00005MC-D) yielding very odd artifacts. GCP OCR does not offer any options to adjust performances, so the only workaround was to perform so image preprocessing.
 
@@ -138,7 +138,7 @@ The following two pictures show the word distributions for those two fields. Des
 
 ![plot](./images/22_number_of_words_in_limitations.png)
 
-#### (Lack of) Results
+### (Lack of) Results
 The main findings are that:
 * There is some overlap between what's a Description vs. a Limitations/Conditions. For example the RFMS and ICA can be found in one on the other.
 * Limitations/Conditions is sometimes used to register flight manual limitations or configuration limitations.
@@ -151,13 +151,14 @@ I failed to find a decent LLM application:
 The key problems might be that the STC Description and Limitations/Conditions are not informative enough and are quite independant between each others and indepndant from the metadata. Another problem is that the Description is often based on the commercial name of the modification/equipment, which is too much of a specific usage domain. We would need to scrapp data from all aeronautical companies and fine tune the LLM first (which is doable).
 Following picture shows the lack of correlation between Description and a Limitations/Conditions. It's worth noting that there are some obvious vertical and horizontal bars. Those might be linked to "standard sentences". 
 
-
 ![plot](./images/22_limitations_vs_descriptions.png)
 
 
-## DRS and the other non DRS documents
+# DRS and the other non DRS documents
 
-### Data collection
+## Data collection
+
+I collected all the DRS data, plus a few more (AIM, AIP)
 
 cite des use case
 
@@ -178,7 +179,7 @@ Parsing non Drs docs
 Is that suitable for NLP?
 
 
-## analysis
+## Analysis
 
 I started writting a quick analysis of the documentary inflation, but I think it could be wronlgy interpreted. More documentation is better. If regulateors does not writte the rules, someone else will (end customers, customers) who are not "by design" concerned by safety.
 
@@ -209,7 +210,7 @@ task:  review against standard and rpviode advice
 context: target audience, background information, scenario
 
 
-# Acknowledgment
+# Conclusion
 
 
 
