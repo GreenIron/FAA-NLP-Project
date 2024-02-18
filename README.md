@@ -1,7 +1,7 @@
 # A NLP project on FAA documents
 
 ## Abstract
-This is a personal NLP project dealing with FAA documentation: use case definition, data source identification, data collection, data cleaning, data mining, RAG and LLM fine-tuning.
+This is an in-work personal NLP project dealing with FAA documentation: use case definition, data source identification, data collection, data cleaning, data mining, RAG and LLM fine-tuning.
 
 # Introduction
 
@@ -120,7 +120,7 @@ There will be as many rows for an STC as there are issuance. Date of STC (re)-is
 
 ![plot](./images/20_STCs_by_stcProductSubType.png)
 
-I've looked at more histograms and I could keep going on for many more pages (e.g. looking at time drifts, comparing single engine vs. multi-engines, focusing on a region or on a company...), but that's enough histograms for today.
+I've looked at more histograms and I could keep going on for many more pages (e.g. looking at time drifts, comparing single engine vs. multi-engines, focusing on a region or on a company, crossing with other databasis...), but that's enough histograms for today.
 
 ## Text analysis
 ### Getting to know the data
@@ -153,12 +153,11 @@ Following picture shows the lack of correlation between Description and a Limita
 
 ![plot](./images/22_limitations_vs_descriptions.png)
 
-
 # DRS and the other non DRS documents
 
 ## Data collection
+It took me about 3 months to collect all DRS data on my personal computer. I collected all the DRS data, plus a few more (AIM, AIP). There was no signigicant difficulties, except from beinmg patient and  main difficulty was 
 
-I collected all the DRS data, plus a few more (AIM, AIP)
 
 cite des use case
 
@@ -178,11 +177,9 @@ Parsing non Drs docs
 
 Is that suitable for NLP?
 
-
 ## Analysis
 
-I started writting a quick analysis of the documentary inflation, but I think it could be wronlgy interpreted. More documentation is better. If regulateors does not writte the rules, someone else will (end customers, customers) who are not "by design" concerned by safety.
-
+I started with a quick analysis of the documentary inflation, but I stopped since it would be wronlgy interpreted. More documentation is better. If regulateors does not writte the rules, someone else will (end customers, customers) who are not "by design" concerned by safety.
 
 ## ML applications
 
