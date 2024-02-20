@@ -153,10 +153,10 @@ Following picture shows the lack of correlation between Description and a Limita
 
 ![plot](./images/22_limitations_vs_descriptions.png)
 
-# DRS and the other non DRS documents
+# All DRS and the other non DRS documents
 
 ## Data collection
-It took me about 3 months to collect all DRS data on my personal computer. I collected all the DRS data, plus a few more (AIM, AIP). There was no signigicant difficulties, except from beinmg patient and  main difficulty was 
+It took me about 3 months to collect all DRS data on my personal computer. I collected all the DRS data, plus a few more (AIM, AIP). There was no signigicant difficulties, except being patient and improving the code to come up with any exceptions found on DSS (e.g. new data format, time-out, pdf crashes).
 
 
 cite des use case
@@ -167,19 +167,47 @@ FAA API, data and DRS
 
 Is that suitable for nlp? Os that suitable for nlp on a personal computer?
 
-Challenge with DRS data
-What's not in FAA DRS
-Getting to know the FAA DRS better
-
-Parsibt Drs docs
-
-Parsing non Drs docs
-
-Is that suitable for NLP?
 
 ## Analysis
 
+Not all DRS data is suitable for NLP projects.
+
+Ullike STC I didn't try to OCR pdf files,
+
+
 I started with a quick analysis of the documentary inflation, but I stopped since it would be wronlgy interpreted. More documentation is better. If regulateors does not writte the rules, someone else will (end customers, customers) who are not "by design" concerned by safety.
+
+
+
+[old](https://drs.faa.gov/browse/excelExternalWindow/BA172489A7E9DA1586257CD30047CF76.0001?modalOpened=true) , [recent](https://drs.faa.gov/browse/excelExternalWindow/DRSDOCID128075530320230314172310.0001)
+
+
+For this analysis I didn't
+
+
+ CAM Number:
+
+    CAM 1
+
+Document Type:
+
+    Civil Aeronautics Manuals (CAMs)
+
+Title:
+
+    CAM 1: Supplement No. 1; New Issuance System - Change of date of CAM 1 to December 15, 1959
+
+Status:
+
+    Historical
+
+Office of Primary Responsibility:
+
+Effective Date:
+
+    12/15/1959
+
+https://drs.faa.gov/browse/excelExternalWindow/FAA000000000000000CAM1_121559PDF.0001?modalOpened=true
 
 ## ML applications
 
@@ -205,6 +233,19 @@ role: adapt role de' exper
 task:  review against standard and rpviode advice
 
 context: target audience, background information, scenario
+
+
+# RAG-use case
+
+## Finding the dataset
+
+
+## Finding the dataset
+
+
+## RAG
+
+## LLM fine tuning
 
 
 # Conclusion
