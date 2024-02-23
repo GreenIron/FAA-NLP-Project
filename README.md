@@ -24,13 +24,7 @@ And more specifically for the text documents released by the FAA as a usage doma
 * FAA documents have a high quality standard (Order 1000.36) compared to the best NLP dataset that one can find on Hugging Face
 
 
-## SAE Criteria
-Being a member of SAE G-34 Artificial Intelligence in Aviation, I wanted to apply the pucklish to this porject:
 
-
-Attempt | #1 | #2 | #3 | #4 | #5 | #6 | #7 | #8 | #9 | #10 | #11
---- | --- | --- | --- |--- |--- |--- |--- |--- |--- |--- |---
-Seconds | 301 | 283 | 290 | 286 | 289 | 285 | 287 | 287 | 272 | 276 | 269
 
 # Data Collection
 ## Results on data collection
@@ -114,6 +108,7 @@ There will be as many rows for an STC as there are issuance. Date of STC (re)-is
 ![plot](./images/20_rotorcraft_stcStatusDate_by_day_of_week.png)
 
 * Historical helicopter STCs between 1990 and 2000: a big surprise to me was that American Eurocopter (my curent company and now Airbus Helicopters, Inc.) was one of the largest issuers of STC certificates (but a detailed analysis of the STCs show that those are not complex). Cheers to the team of engineers, because I'm walking on their shoulders everyday. It's also worth exploring noting that the different companies have very different business models (ODA doing worth for third parties, ODA doing only internal work, companies with core products working with ACO).
+
 ![plot](./images/20_STC_by_STC_holder_helicopter_1900.png)
 
 * Historical and Current STCs: the distribution is quite expected, but most surprising is that the distribution is not reflecting the relative weight of those markets (large multi-engine should be significantly highier).
@@ -156,60 +151,61 @@ Following picture shows the lack of correlation between Description and a Limita
 # All DRS and the other non DRS documents
 
 ## Data collection
-It took me about 3 months to collect all DRS data on my personal computer. I collected all the DRS data, plus a few more (AIM, AIP). There was no signigicant difficulties, except being patient and improving the code to come up with any exceptions found on DSS (e.g. new data format, time-out, pdf crashes).
+It took me about 3 months to collect all DRS data on my personal computer, but many more months to set up a functional data collection routine. I collected all the DRS data, plus a few more (AIM, AIP). There was no signigicant difficulties, except being patient and improving the code to come up with any exceptions found on DRS (e.g. new data format, attachments, time-out, pdf crashes). 
+The whole raw documents (mainly pdf, but also doc, xls, html) is about 55GB.
 
+## Getting to know the data
+At the time of my data collection, there was:
+* ~172799 indexed documents
+* ~324805 available documents if we add the attachments. Those include a lot of redundant documents, because DRS makes available doc and html versions of some pdfs.
+* ~171254 documents that can be decoded without OCR (I didn't try to OCR all the missing documents for budget reasons). Non-decodable OCR also include documents with no content (only the index is available).
 
-cite des use case
+The following pdf made PdfReader crash really bad, but I didn't investigate further:
+* [CAM 1: Supplement No. 1; New Issuance System - Change of date of CAM 1 to December 15, 1959](https://drs.faa.gov/browse/excelExternalWindow/FAA000000000000000CAM1_121559PDF.0001?modalOpened=true)
+* [CAM 4b: Supplement No. 1; Certification and Operation of Certain Airplanes forthe Department of the Interior in the Trust Territory of the Pacific Islands](https://drs.faa.gov/browse/excelExternalWindow/FAA00000000000000CAM4b_050160PDF.0001?modalOpened=true)
+* [CAM 51: Supplement No. 2; 51.17 - Standard of Performance](https://drs.faa.gov/browse/excelExternalWindow/FAA00000000000000CAM51_060851PDF.0001?modalOpened=true)
 
-For the data .
+I skipped the metadata analysis, and focused on a key metrics to have an idea of what NLP tool to use.
 
-FAA API, data and DRS
+The following table recaps the number of documents by DRS document type:
+DRS doc types|ADFRAWD|ADNPRM|AC|AB|POLICY|CAM|CAR|CANIC|ADFREAD|ELOS|EXEMPTION|CFRFRSFAR|NORSEE|NPRM|PMA|SAIB|SCFINAL|SCPROPOSED|SFAR|STC|TSOI|TSO|FAR|TCDSMODEL|UNAPPROVED_PARTS_NOTIFICATIONS|ENVIRONMENTAL_SUPPORTING_DOCUMENTS|LAUNCH_SITE_OPERATOR_LICENSES|LAUNCH_VEHICLE_OPERATOR_LICENSES|PERMITS|REENTRY_SITE_OPERATOR_LICENSES|REENTRY_VEHICLE_OPERATOR_LICENSES|SAFETY_ELEMENT_APPROVALS|ORDER_8900.1|CLARIFY_POLICY|AFS-1_MEMORANDUMS|AIRCRAFT_MASTER_SCHEDULE|AIRCRAFT_STANDARDIZED_CURRICULUM|AT_JTA|OTHER_AWO|ALERTS|OTHER_AWARDS_INFORMATION_GUIDES|8900.1_EDITORIAL_CORRECTIONS|OTHER_EFB_RESEARCH_REPORTS|OTHER_EFB_CHECKLISTS|OTHER_FAA_90_DAY_SAFETY_REVIEW|OTHER_CPD_6.03|AFS_FFS_UPDATEPUB|AFS_FFS_UPDATES|FOEB|FSB_REPORTS|AFS_POLICY_DEV_MEMOS|OTHER_FLIGHT_STANDARDS_ORM_WORKSHEETS|AFS_FOCUS_TEAMS|GA_JTA|BULLETINS|OTHER_PS_HANDBOOKS|INFO|OTHER_INFORMATION_GUIDES|PILOT_QUALIFICATION_CURRICULUM|OTHER_INTERNATIONAL_PUBLICATIONS|OTHER_JOB_AIDS|OTHER_LASER_INVESTIGATION_REFERENCES|MMEL_POLICY_LETTERS|MMEL|NOTICES|OSR|OPSS_GUIDANCE|OSWG|ORDER_8300.10|ORDER_8400.10|ORDER_8700.1|ORDER_8740.1|ORDERS|PART_129_OPSPEC_JA|OTHER_PS_FEDERAL_AVIATION_ACTS|OTHER_PS_LEGAL_INTERPRETATIONS|OTHER_PS_POLICY_MEMORANDA|OTHER_PS_PREAMBLES|OTHER_QMS_AND_BP|OTHER_RCCB|OTHER_RIRTP|SAFO|SAS_AXH_DCT|SAS_DCT|STCRELIEFAPPLETTER|8900.1_SUMMARY_OF_CHANGES|OTHER_SPRS|OTHER_VPM|LEGAL_INTERPRETATIONS
+---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---
+Number of documents|46666|15168|4212|20|1489|992|4966|0|730|3888|57658|4745|30|1035|56999|2682|2893|736|176|0|7137|1186|24255|15389|383|72|30|76|22|0|0|14|16832|0|0|3|3|2244|0|429|56|238|12|4|2|0|23|0|501|1377|0|0|29|1801|8643|588|499|29|3|40|17|0|872|10397|5133|94|58|490|1045|1311|653|181|4478|48|172|0|0|0|0|18|0|388|1073|5172|683|3441|0|0|2076
 
-Is that suitable for nlp? Os that suitable for nlp on a personal computer?
+I wanted to analyse the documentary inflation over the years, but I stopped since it would be wrongly interpreted. 
 
+* Token distribution for all DRS: As expected the distribuytion os multimodal with a very long tail. It's interresting to note that the average size is rather small and could be entirely fed to a modern LLM (~1k).
 
-## Analysis
+![plot](./images/27_token_distr_all_DRS.png)
 
-Not all DRS data is suitable for NLP projects.
+* Token distribution for ADFINAL: this one present a very odd distribution with its two bell-shaped multimodal. It woulbe be interresting to understand if those two modes correspond to two different patterns.
 
-Ullike STC I didn't try to OCR pdf files,
+![plot](./images/27_token_distr_adfinal.png)
 
+* Token distribution for AC: I was more surprised to see that the AC follows a classic exponential decrease, because I'm used to very very long ACs (AC27 and AC20).
 
-I started with a quick analysis of the documentary inflation, but I stopped since it would be wronlgy interpreted. More documentation is better. If regulateors does not writte the rules, someone else will (end customers, customers) who are not "by design" concerned by safety.
+![plot](./images/27_token_distr_ac.png)
 
+* Token distribution for MMEL: I was expecting a distribution concentrated around a single mode, but the MMEL distribution is more complex.
 
+![plot](./images/27_token_distr_mmel.png)
 
-[old](https://drs.faa.gov/browse/excelExternalWindow/BA172489A7E9DA1586257CD30047CF76.0001?modalOpened=true) , [recent](https://drs.faa.gov/browse/excelExternalWindow/DRSDOCID128075530320230314172310.0001)
+*Token distribution for ORDERS: Same comment as AC.
 
-
-For this analysis I didn't
-
-
- CAM Number:
-
-    CAM 1
-
-Document Type:
-
-    Civil Aeronautics Manuals (CAMs)
-
-Title:
-
-    CAM 1: Supplement No. 1; New Issuance System - Change of date of CAM 1 to December 15, 1959
-
-Status:
-
-    Historical
-
-Office of Primary Responsibility:
-
-Effective Date:
-
-    12/15/1959
-
-https://drs.faa.gov/browse/excelExternalWindow/FAA000000000000000CAM1_121559PDF.0001?modalOpened=true
+![plot](./images/27_token_distr_orders.png)
 
 ## ML applications
+The size of the dataset makes the project intractable on my personal computer, so I decided to narrow-down the usage domain.
+
+# AC-ORDER-HANDBOOK-AIP-AIM
+
+# RAG-use case
+
+## Finding the dataset
+
+
+## Finding the dataset
+
 
 I did seveal prompts (wit)
 
@@ -235,17 +231,274 @@ task:  review against standard and rpviode advice
 context: target audience, background information, scenario
 
 
-# RAG-use case
-
-## Finding the dataset
-
-
-## Finding the dataset
-
-
 ## RAG
 
 ## LLM fine tuning
+
+## ARP6983 Criteria Review
+
+### MLDL objectives
+
+#### 1 ML Constituent ODD
+* 1.1 The MLCODD is characterized
+
+Yes. The ODD is actually explicitly defined in the dataset itself for most of it. Otherwise it is detailed on the FAA website.
+
+* 1.2 AN ML Data impact analysis is developed from the MLCODD
+
+Unclear?
+
+* 1.3 Any limitation of use to the ML-based System/Subsystem processes is provided, including the System Safety Assessment process
+
+None.
+
+#### 2 ML Constituent Requirements
+* 2.1 ML Constituent requirements are developed for each ML Constituent 
+
+
+
+* 2.2 Derived ML Constituent requirements are defined and provided to the ML-based System/Subsystem processes, including the System Safety Assessment process
+
+
+
+#### 3 ML Environment Set Up
+* 3.1 The MLDL environment is selected and defined.
+
+Based on conda [`environment.yml`](https://conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html#activating-an-environment).
+
+#### 4 ML Data Management
+* 4.1 Data sources are identified and selected
+
+Yes (DRS).
+
+* 4.1 Lack of undesirable bias is ensured
+
+Should be N/A.
+
+* 4.3 Data required for training, validation, and test datasets is collected
+
+Yes (DRS).
+
+* 4.4 Data has specified characteristics (such as representativeness, sufficiency, fairness, etc.)
+
+Yes (DRS).
+
+* 4.5 Data are cleaned up and enhanced and can be used by the ML algorithm without any additional checking
+
+Yes (basic cleaning).
+One difficulty is that the raw data (pdf) are not usable as is and need to be decoded.
+
+* 4.6 Requirements allocated to the ML Data are satisfied
+
+
+
+* 4.7 Data pre-processing description is updated
+
+
+
+* 4.8 Data leakage is avoided
+
+
+
+* 4.9 Input dataset is divided into three datasets for training, validation, and test
+
+
+
+#### 5 ML Model Design Model
+* 5.1 The ML Model architecture is developed from the ML Constituent requirements
+
+
+
+* 5.2 ML Model requirements are developed from the ML Constituent requirements and the ML  environment
+
+
+
+* 5.3 Derived ML Model requirements and their rationale are defined and provided to the ML Constituent requirements process
+
+
+
+* 5.4 The ML Model is built, trained, and optimized from the ML Constituent requirements and if applicable from the ML Model requirements
+
+
+
+* 5.5 ML Model Description is developed from the ML Model to describe its architecture, its
+hyperparameters and parameters, its analytical/algorithmic syntax and semantic, its replication
+criteria, and its execution environment.
+
+
+
+#### 6 ML Validation
+* 6.1 ML Model requirements comply with system/subsystem requirements
+
+
+
+* 6.2 ML Model requirements are accurate and consistent
+
+
+
+* 6.3 ML Model requirements are compatible with the target computer
+
+
+
+* 6.4 Data processing description is compatible with the target computer
+
+
+
+* 6.5 ML Model requirements are verifiable
+
+
+
+* 6.6 ML Model requirements conform to standards
+
+
+
+* 6.7 ML Model requirements are traceable to system/subsystem requirements
+
+
+
+* 6.8 ML Model Architecture Verification
+
+
+
+* 6.9 The ML architecture is compatible with the ML Model requirements
+
+
+
+* 6.10 The ML architecture is consistent
+
+
+
+* 6.11 The ML architecture is verifiable
+
+
+
+* 6.12 The ML architecture conforms to standards
+
+
+
+#### 7 ML Model Verification
+* 7.1 The ML Model complies with the ML Model requirements
+
+
+
+* 7.2 The ML Model is accurate and consistent
+
+
+
+* 7.3 The ML Model is compatible with target computer
+
+
+
+* 7.4 The ML Model is verifiable
+
+
+
+* 7.5 The ML Model conforms to standards
+
+
+
+* 7.6 Verification of verification procedures
+
+
+
+* 7.7 Test procedures are correct
+
+
+
+* 7.8 Test results are correct, and discrepancies explained
+
+
+
+* 7.9 Test coverage of ML Data and Model requirements is achieved
+
+
+
+* 7.10 Test coverage of ML Model structure to the appropriate coverage criteria is achieved
+
+
+
+### Data quality learning assurance objectives
+* 1 Nature of data (explicit definition of input variables);
+
+Textual with metadata (dates and categorical).
+
+* 2 Ranges of data (minimum and maximum value, classes of categorical data);
+
+Can be achieved with a [`describe`](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.describe.html) or [`unique`](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Index.unique.html#pandas.Index.unique).
+
+* 3 Representativeness: distribution of data across MLCODD [numerical values distribution, flight or operating condition, ambient condition indicator (e.g., day temperature for a pressure sensor, day, or night indicator for an image, rain, or dust level, etc.)];
+
+By design the data is rather exhaustive, but missing other commercial standards that are FAA accepted (SAE, ASTM, MIL-SPEC, RTCA).
+
+* 4 Fairness (lack of bias);
+
+Yes, based on FAA objectives (by data source).
+
+* 5 Acceptable data sources and Source tag
+
+Yes (US Gov).
+
+* 6 Accuracy;
+
+Yes (by data source).
+
+* 7 Resolution (Precision);
+
+Not applicable.
+
+* 8 Sufficiency: Minimum acceptable size for datasets;
+
+Yes for anything that does not require an issue paper.
+
+* 9 Criteria for data cleansing and denoising (missing data, out-of-distribution data);
+
+Unclear.
+
+* 10 Criteria for data transformation;
+
+N/A.
+
+* 11 Criteria for data augmentation, if applicable;
+
+For NLP, data aurgmentation relies on the use of synomics, back-translations, regeneration...
+
+* 12 Criteria for data annotation, if applicable;
+
+N/A.
+
+* 13 Criteria for data segregation (training, validation, and verification datasets);
+
+Not different from standard practives.
+
+* 14 Assurance Level;
+
+N/A (DAL E).
+
+* 15 Traceability to system level;
+
+
+
+* 16 Timeliness (Time stamp);
+
+FAA regularly cancels its publications, so there are mechanism against data drifts.
+
+* 17 Completeness (statistically significant data to cover input space and OOD as per System/subsystem Level Requirements);
+
+By design the data is rather exhaustive, but missing other commercial standards that are FAA accepted (SAE, ASTM, MIL-SPEC, RTCA).
+
+* 18 Format of dataset files;
+
+Pandas [`dataframe`](https://pandas.pydata.org/pandas-docs/stable/reference/frame.html#dataframe).
+
+* 19 Security tag(s);
+
+I don't understand.
+
+* 20 Monitoring or Recording tag(s).
+
+I don't understand, but should be ensured by US gov.
+
+### ML Constituent implementation objectives by DAL
 
 
 # Conclusion
