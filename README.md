@@ -250,260 +250,82 @@ context: target audience, background information, scenario
 ### MLDL objectives
 
 #### 1 ML Constituent ODD
-* 1.1 The MLCODD is characterized
-
-Yes. The ODD is actually explicitly defined in the dataset itself for most of it. Otherwise it is detailed on the FAA website.
-
-* 1.2 AN ML Data impact analysis is developed from the MLCODD
-
-Unclear?
-
-* 1.3 Any limitation of use to the ML-based System/Subsystem processes is provided, including the System Safety Assessment process
-
-None.
+* *1.1 The MLCODD is characterized*: Yes. The ODD is actually explicitly defined in the dataset itself for most of it. Otherwise it is detailed on the FAA website.
+* *1.2 AN ML Data impact analysis is developed from the MLCODD*: Unclear?
+* *1.3 Any limitation of use to the ML-based System/Subsystem processes is provided, including the System Safety Assessment process*: None.
 
 #### 2 ML Constituent Requirements
-* 2.1 ML Constituent requirements are developed for each ML Constituent 
-
-
-
-* 2.2 Derived ML Constituent requirements are defined and provided to the ML-based System/Subsystem processes, including the System Safety Assessment process
-
-
+* *2.1 ML Constituent requirements are developed for each ML Constituent*: 
+* *2.2 Derived ML Constituent requirements are defined and provided to the ML-based System/Subsystem processes, including the System Safety Assessment process*:
 
 #### 3 ML Environment Set Up
-* 3.1 The MLDL environment is selected and defined.
-
-Based on conda [`environment.yml`](https://conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html#activating-an-environment).
+* *3.1 The MLDL environment is selected and defined*: Based on conda [`environment.yml`](https://conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html#activating-an-environment).
 
 #### 4 ML Data Management
-* 4.1 Data sources are identified and selected
-
-Yes (DRS).
-
-* 4.1 Lack of undesirable bias is ensured
-
-Should be N/A.
-
-* 4.3 Data required for training, validation, and test datasets is collected
-
-Yes (DRS).
-
-* 4.4 Data has specified characteristics (such as representativeness, sufficiency, fairness, etc.)
-
-Yes (DRS).
-
-* 4.5 Data are cleaned up and enhanced and can be used by the ML algorithm without any additional checking
-
-Yes (basic cleaning).
-One difficulty is that the raw data (pdf) are not usable as is and need to be decoded.
-
-* 4.6 Requirements allocated to the ML Data are satisfied
-
-
-
-* 4.7 Data pre-processing description is updated
-
-
-
-* 4.8 Data leakage is avoided
-
-Yes (ensured by data source).
-
-* 4.9 Input dataset is divided into three datasets for training, validation, and test
-
-
+* *4.1 Data sources are identified and selected*: Yes (DRS).
+* *4.1 Lack of undesirable bias is ensured*: Should be N/A.
+* *4.3 Data required for training, validation, and test datasets is collected*: Yes (DRS).
+* *4.4 Data has specified characteristics (such as representativeness, sufficiency, fairness, etc.)*: Yes (DRS).
+* *4.5 Data are cleaned up and enhanced and can be used by the ML algorithm without any additional checking*: Yes (basic cleaning). One difficulty is that the raw data (pdf) are not usable as is and need to be decoded.
+* *4.6 Requirements allocated to the ML Data are satisfied*:
+* *4.7 Data pre-processing description is updated*:
+* *4.8 Data leakage is avoided*: Yes (ensured by data source)*:
+* *4.9 Input dataset is divided into three datasets for training, validation, and test*:
 
 #### 5 ML Model Design Model
-* 5.1 The ML Model architecture is developed from the ML Constituent requirements
-
-
-
-* 5.2 ML Model requirements are developed from the ML Constituent requirements and the ML  environment
-
-
-
-* 5.3 Derived ML Model requirements and their rationale are defined and provided to the ML Constituent requirements process
-
-
-
-* 5.4 The ML Model is built, trained, and optimized from the ML Constituent requirements and if applicable from the ML Model requirements
-
-
-
-* 5.5 ML Model Description is developed from the ML Model to describe its architecture, its
-hyperparameters and parameters, its analytical/algorithmic syntax and semantic, its replication
-criteria, and its execution environment.
-
-
+* *5.1 The ML Model architecture is developed from the ML Constituent requirements*:
+* *5.2 ML Model requirements are developed from the ML Constituent requirements and the ML  environment*:
+* *5.3 Derived ML Model requirements and their rationale are defined and provided to the ML Constituent requirements process*:
+* *5.4 The ML Model is built, trained, and optimized from the ML Constituent requirements and if applicable from the ML Model requirements*:
+* *5.5 ML Model Description is developed from the ML Model to describe its architecture, its hyperparameters and parameters, its analytical/algorithmic syntax and semantic, its replication criteria, and its execution environment*:
 
 #### 6 ML Validation
-* 6.1 ML Model requirements comply with system/subsystem requirements
-
-
-
-* 6.2 ML Model requirements are accurate and consistent
-
-
-
-* 6.3 ML Model requirements are compatible with the target computer
-
-
-
-* 6.4 Data processing description is compatible with the target computer
-
-
-
-* 6.5 ML Model requirements are verifiable
-
-
-
-* 6.6 ML Model requirements conform to standards
-
-
-
-* 6.7 ML Model requirements are traceable to system/subsystem requirements
-
-
-
-* 6.8 ML Model Architecture Verification
-
-
-
-* 6.9 The ML architecture is compatible with the ML Model requirements
-
-
-
-* 6.10 The ML architecture is consistent
-
-I don't understand.
-
-* 6.11 The ML architecture is verifiable
-
-
-
-* 6.12 The ML architecture conforms to standards
-
-Yes, RAG architecture.
+* *6.1 ML Model requirements comply with system/subsystem requirements*:
+* *6.2 ML Model requirements are accurate and consistent*:
+* *6.3 ML Model requirements are compatible with the target computer*:
+* *6.4 Data processing description is compatible with the target computer*:
+* *6.5 ML Model requirements are verifiable*:
+* *6.6 ML Model requirements conform to standards*:
+* *6.7 ML Model requirements are traceable to system/subsystem requirements*:
+* *6.8 ML Model Architecture Verification*:
+* *6.9 The ML architecture is compatible with the ML Model requirements*:
+* *6.10 The ML architecture is consistent*: I don't understand.
+* *6.11 The ML architecture is verifiable*:
+* *6.12 The ML architecture conforms to standards*: Yes, RAG architecture.
 
 #### 7 ML Model Verification
-* 7.1 The ML Model complies with the ML Model requirements
-
-
-
-* 7.2 The ML Model is accurate and consistent
-
-
-
-* 7.3 The ML Model is compatible with target computer
-
-No target computer.
-
-* 7.4 The ML Model is verifiable
-
-
-
-* 7.5 The ML Model conforms to standards
-
-Yes (reuse of state-of-the-art RAG).
-
-* 7.6 Verification of verification procedures
-
-
-
-* 7.7 Test procedures are correct
-
-
-
-* 7.8 Test results are correct, and discrepancies explained
-
-
-
-* 7.9 Test coverage of ML Data and Model requirements is achieved
-
-
-
-* 7.10 Test coverage of ML Model structure to the appropriate coverage criteria is achieved
-
-
+* *7.1 The ML Model complies with the ML Model requirements*:
+* *7.2 The ML Model is accurate and consistent*:
+* *7.3 The ML Model is compatible with target computer*: No target computer.
+* *7.4 The ML Model is verifiable*:
+* *7.5 The ML Model conforms to standards*: Yes (reuse of state-of-the-art RAG).
+* *7.6 Verification of verification procedures*:
+* *7.7 Test procedures are correct*:
+* *7.8 Test results are correct, and discrepancies explained*:
+* *7.9 Test coverage of ML Data and Model requirements is achieved*:
+* *7.10 Test coverage of ML Model structure to the appropriate coverage criteria is achieved*:
 
 ### Data quality learning assurance objectives
-* 1 Nature of data (explicit definition of input variables);
-
-Textual with metadata (dates and categorical).
-
-* 2 Ranges of data (minimum and maximum value, classes of categorical data);
-
-Can be achieved with a [`describe`](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.describe.html) or [`unique`](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Index.unique.html#pandas.Index.unique).
-
-* 3 Representativeness: distribution of data across MLCODD [numerical values distribution, flight or operating condition, ambient condition indicator (e.g., day temperature for a pressure sensor, day, or night indicator for an image, rain, or dust level, etc.)];
-
-By design the data is rather exhaustive, but missing other commercial standards that are FAA accepted (SAE, ASTM, MIL-SPEC, RTCA).
-
-* 4 Fairness (lack of bias);
-
-Yes, based on FAA objectives (by data source).
-
-* 5 Acceptable data sources and Source tag
-
-Yes (US Gov).
-
-* 6 Accuracy;
-
-Yes (by data source).
-
-* 7 Resolution (Precision);
-
-Not applicable.
-
-* 8 Sufficiency: Minimum acceptable size for datasets;
-
-Yes for anything that does not require an issue paper.
-
-* 9 Criteria for data cleansing and denoising (missing data, out-of-distribution data);
-
-Unclear.
-
-* 10 Criteria for data transformation: N/A.
-* 11 Criteria for data augmentation, if applicable;
-
-For NLP, data aurgmentation relies on the use of synomics, back-translations, regeneration...
-
-* 12 Criteria for data annotation, if applicable;
-
-N/A.
-
-* 13 Criteria for data segregation (training, validation, and verification datasets);
-
-Not different from standard practives.
-
-* 14 Assurance Level;
-
-N/A (DAL E).
-
-* 15 Traceability to system level;
-
-Not compliant.
-
-* 16 Timeliness (Time stamp);
-
-FAA regularly cancels its publications, so there are mechanism against data drifts.
-
-* 17 Completeness (statistically significant data to cover input space and OOD as per System/subsystem Level Requirements);
-
-By design the data is rather exhaustive, but missing other commercial standards that are FAA accepted (SAE, ASTM, MIL-SPEC, RTCA).
-
-* 18 Format of dataset files;
-
-Pandas [`dataframe`](https://pandas.pydata.org/pandas-docs/stable/reference/frame.html#dataframe).
-
-* 19 Security tag(s);
-
-I don't understand.
-
-* 20 Monitoring or Recording tag(s).
-
-I don't understand, but should be ensured by US gov.
+* *1 Nature of data (explicit definition of input variables)*: Textual with metadata (dates and categorical)*:
+* *2 Ranges of data (minimum and maximum value, classes of categorical data)*: Can be achieved with a [`describe`](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.describe.html) or [`unique`](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Index.unique.html#pandas.Index.unique).
+* *3 Representativeness: distribution of data across MLCODD [numerical values distribution, flight or operating condition, ambient condition indicator (e.g., day temperature for a pressure sensor, day, or night indicator for an image, rain, or dust level, etc.)]*: by design the data is rather exhaustive, but missing other commercial standards that are FAA accepted (SAE, ASTM, MIL-SPEC, RTCA).
+* *4 Fairness (lack of bias)*: Yes, based on FAA objectives (by data source).
+* *5 Acceptable data sources and Source tag*: Yes (US Gov).
+* *6 Accuracy*: Yes (by data source).
+* *7 Resolution (Precision)*: Not applicable.
+* *8 Sufficiency: Minimum acceptable size for datasets*: Yes for anything that does not require an issue paper.
+* *9 Criteria for data cleansing and denoising (missing data, out-of-distribution data)*: Unclear.
+* *10 Criteria for data transformation*: N/A.
+* *11 Criteria for data augmentation, if applicable*: For NLP, data aurgmentation relies on the use of synomics, back-translations, regeneration...
+* *12 Criteria for data annotation, if applicable*: N/A.
+* *13 Criteria for data segregation (training, validation, and verification datasets)*: Not different from standard practives.
+* *14 Assurance Level*: N/A (DAL E).
+* *15 Traceability to system level*: Not compliant.
+* *16 Timeliness (Time stamp)*: FAA regularly cancels its publications, so there are mechanism against data drifts.
+* *17 Completeness (statistically significant data to cover input space and OOD as per System/subsystem Level Requirements)*: By design the data is rather exhaustive, but missing other commercial standards that are FAA accepted (SAE, ASTM, MIL-SPEC, RTCA).
+* *18 Format of dataset files*: Pandas [`dataframe`](https://pandas.pydata.org/pandas-docs/stable/reference/frame.html#dataframe).
+* *19 Security tag(s)*: I don't understand.
+* *20 Monitoring or Recording tag(s)*: I don't understand, but should be ensured by US gov.
 
 # Conclusion
 
