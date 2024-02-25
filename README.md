@@ -1,7 +1,7 @@
 # A NLP project on FAA documents
 
 ## Abstract
-This is an in-work personal NLP project dealing with FAA documentation: use case definition, data source identification, data collection, data cleaning, data mining, RAG and LLM fine-tuning.
+This is an in-work personal NLP project dealing with FAA documentation: use case definition, data source identification, data collection, data cleaning, data mining and some RAG and LLM fine-tuning.
 
 # Introduction
 
@@ -174,7 +174,7 @@ Number of documents|46666|15168|4212|20|1489|992|4966|0|730|3888|57658|4745|30|1
 
 I wanted to analyse the documentary inflation over the years, but I stopped since it would be wrongly interpreted. 
 
-* Token distribution for all DRS: As expected the distribuytion os multimodal with a very long tail. It's interresting to note that the average size is rather small and could be entirely fed to a modern LLM (~1k).
+* Token distribution for all DRS: As expected the distribuytion os multimodal with a very long tail. It's interresting to note that the average size is rather small and could be entirely fed to a local LLM (~1k). This limitation does not apply to GAFAM provided LLM (100k to 1M tokens).
 
 ![plot](./images/27_token_distr_all_DRS.png)
 
@@ -204,12 +204,22 @@ The size of the dataset makes the project intractable on my personal computer, s
 ## Finding the dataset
 
 
-## Finding the dataset
+## Why RAG
+
+talk about the book
+
+then searching for a librairi
+
+haystack
+
+collabaration with Airbus
 
 
 I did seveal prompts (wit)
 
 zero shot proved very innefective. I didn't try chatGPT.
+
+May be becaue of my promgsp
 
 
 fdire que je suis parti sur du RAG, car prometeur. Mais tarining sur la liste en utlisaaloxe (voir article de HN), amsi computer intesive.
@@ -298,7 +308,7 @@ One difficulty is that the raw data (pdf) are not usable as is and need to be de
 
 * 4.8 Data leakage is avoided
 
-
+Yes (ensured by data source).
 
 * 4.9 Input dataset is divided into three datasets for training, validation, and test
 
@@ -366,7 +376,7 @@ criteria, and its execution environment.
 
 * 6.10 The ML architecture is consistent
 
-
+I don't understand.
 
 * 6.11 The ML architecture is verifiable
 
@@ -374,7 +384,7 @@ criteria, and its execution environment.
 
 * 6.12 The ML architecture conforms to standards
 
-
+Yes, RAG architecture.
 
 #### 7 ML Model Verification
 * 7.1 The ML Model complies with the ML Model requirements
@@ -387,7 +397,7 @@ criteria, and its execution environment.
 
 * 7.3 The ML Model is compatible with target computer
 
-
+No target computer.
 
 * 7.4 The ML Model is verifiable
 
@@ -395,7 +405,7 @@ criteria, and its execution environment.
 
 * 7.5 The ML Model conforms to standards
 
-
+Yes (reuse of state-of-the-art RAG).
 
 * 7.6 Verification of verification procedures
 
@@ -454,10 +464,7 @@ Yes for anything that does not require an issue paper.
 
 Unclear.
 
-* 10 Criteria for data transformation;
-
-N/A.
-
+* 10 Criteria for data transformation: N/A.
 * 11 Criteria for data augmentation, if applicable;
 
 For NLP, data aurgmentation relies on the use of synomics, back-translations, regeneration...
@@ -476,7 +483,7 @@ N/A (DAL E).
 
 * 15 Traceability to system level;
 
-
+Not compliant.
 
 * 16 Timeliness (Time stamp);
 
@@ -497,9 +504,6 @@ I don't understand.
 * 20 Monitoring or Recording tag(s).
 
 I don't understand, but should be ensured by US gov.
-
-### ML Constituent implementation objectives by DAL
-
 
 # Conclusion
 
