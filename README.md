@@ -27,7 +27,7 @@ From a pure ML perspective, aviation data offers lots of benefits:
 And more specifically for the text documents released by the FAA:
 * FAA offers a powerful API
 * FAA documents are well formatted (Q&A tables, consistent tables of content)
-* FAA documents have a high quality standard (Order 1000.36) compared to the best NLP dataset that one can find on Hugging Face
+* FAA documents have a high quality standard (Order 1000.36) compared to the best NLP dataset that one can find on Hugging Face. The notably natively include ["chain of thoughts"](https://arxiv.org/pdf/2201.11903.pdf) answers.
 
 # Data Collection
 ## Results on data collection
@@ -145,7 +145,7 @@ I failed to find a decent LLM application:
 
 The key problems might be that the STC Description and Limitations/Conditions are not informative enough and are quite independent between each others from the metadata (there are no patterns to learn or represent). Another problem is that the Description is often based on the commercial name of the modification/equipment, which is too much of a specific usage domain. Unlike a catalogue, it is not meant to provide a commercial description. We would need to scrap data from all STC holders, correlate the P/N with the catalogue description to have more information.
 
-Following picture shows the lack of correlation between Description and a Limitations/Conditions. It's worth noting that there are some obvious vertical and horizontal bars. Those might be linked to "standard sentences" ([AC No: 20-188](https://www.faa.gov/documentlibrary/media/advisory_circular/ac_20-188.pdf)). 
+Following picture shows the lack of correlation between Description and a Limitations/Conditions. It's worth noting that there are some obvious vertical and horizontal bars. Those might be linked to "standard sentences" ([AC No: 20-188](https://www.faa.gov/documentlibrary/media/advisory_circular/ac_20-188.pdf)). There are also several cluster that could be worth exploring (same underlying pattern or pure coincidence?).
 
 ![plot](./images/22_limitations_vs_descriptions.png)
 
@@ -168,7 +168,7 @@ At the time of my data collection, there was:
 
 This dataset is currently qui airplanes/rotorcrafts-oriented, but the FAA is adding more and more data for space travels.
 
-The following pdf made PdfReader crash really bad, but I didn't investigate further:
+The following pdf made PdfReader crash really bad, but I didn't investigate further (I just noted that those happened to be the oldest indexed FAA documents):
 * [CAM 1: Supplement No. 1; New Issuance System - Change of date of CAM 1 to December 15, 1959](https://drs.faa.gov/browse/excelExternalWindow/FAA000000000000000CAM1_121559PDF.0001?modalOpened=true)
 * [CAM 4b: Supplement No. 1; Certification and Operation of Certain Airplanes forthe Department of the Interior in the Trust Territory of the Pacific Islands](https://drs.faa.gov/browse/excelExternalWindow/FAA00000000000000CAM4b_050160PDF.0001?modalOpened=true)
 * [CAM 51: Supplement No. 2; 51.17 - Standard of Performance](https://drs.faa.gov/browse/excelExternalWindow/FAA00000000000000CAM51_060851PDF.0001?modalOpened=true)
@@ -182,23 +182,23 @@ Number of documents|46666|15168|4212|20|1489|992|4966|0|730|3888|57658|4745|30|1
 
 I wanted to analyse the documentary inflation over the years, but I stopped since it would be wrongly interpreted. 
 
-* *Token distribution for all DRS*: As expected the distribuytion is multimodal with a heavy tail. It's interresting to note that the average size is rather small and could be entirely fed to a local LLM (~1k). This limitation does not apply to GAFAM provided LLM (100k to 1M tokens).
+* *Word distribution for all DRS*: As expected the distribuytion is multimodal with a heavy tail. It's interresting to note that the average size is rather small and could be entirely fed to a local LLM (~1k). This limitation does not apply to GAFAM provided LLM (100k to 1M tokens).
 
 ![plot](./images/27_token_distr_all_DRS.png)
 
-* *Token distribution for ADFINAL*: this one present a very odd distribution with its two bell-shaped multimodal. It woulbe be interresting to understand if those two modes correspond to two different patterns.
+* *Word distribution for ADFINAL*: this one present a very odd distribution with its two bell-shaped multimodal. It woulbe be interresting to understand if those two modes correspond to two different patterns.
 
 ![plot](./images/27_token_distr_adfinal.png)
 
-* *Token distribution for AC:* I was more surprised to see that the AC follows a classic exponential decrease, because I'm used to very very long ACs (AC27 and AC20).
+* *Word distribution for AC*: I was more surprised to see that the AC follows a classic exponential decrease, because I'm used to very very long ACs (AC27 and AC20).
 
 ![plot](./images/27_token_distr_ac.png)
 
-* *Token distribution for MMEL:* I was expecting a distribution concentrated around a single mode, but the MMEL distribution is more complex.
+* *Word distribution for MMEL*: I was expecting a distribution concentrated around a single mode, but the MMEL distribution is more complex.
 
 ![plot](./images/27_token_distr_mmel.png)
 
-* *Token distribution for ORDERS:* Same comment as AC.
+* *Word distribution for ORDERS*: Same comment as AC.
 
 ![plot](./images/27_token_distr_orders.png)
 
@@ -207,12 +207,15 @@ The size of the dataset makes the project intractable on my personal computer, s
 
 As far as I know there are several ways to work on a document with LLM: pass the document in the context window (extremely resource intensive), fine-tune (very resource intensive), RAG (manageable).
 
+[Retrieval Augmentation Reduces Hallucination in Conversation](https://arxiv.org/abs/2104.07567)
+
+
 * *role*: you are an expert in all aspects of operations, airworthiness and certification for rotorcraft and airplanes including maintenance and engineering.
 * *task*: you provide detailed guidance to an applicant or an operator.
 * *context*: rotorcraft and airplanes operations and airworthiness in United States National Airspace. You are using resources from AIP, AIP, AC, Orders, FARS.
 
 ### AC-ORDER-HANDBOOK-AIP-AIM
-Blabla. Segmentation.
+Blabla. Segmentation. Chain of thoughts. Paragraph decomposition (helps with performance and robustness).
 
 ### RAG-use case
 
@@ -221,18 +224,13 @@ Short intro based on https://haystack.deepset.ai/, [nlp book](https://www.oreill
 
 [langchain](https://www.langchain.com/), [LlamaIndex](https://www.llamaindex.ai/), [Pinecone](https://www.pinecone.io/), [Weaciate](https://weaviate.io/)
 
-
-## RAG
+RAG much better at not hallucinating
 
 ### LLM fine tuning
 
 [check this](https://generallyintelligent.substack.com/p/fine-tuning-mistral-7b-on-magic-the)
+[or this](https://helixml.substack.com/p/how-we-got-fine-tuning-mistral-7b)
 
-
-
-<!-- 
-https://helixml.substack.com/p/how-we-got-fine-tuning-mistral-7b
--->
 
 ### Zero-shot with Gemini 1.5
 Gemini 1.5 provides a 1.5M todek window, paving the way...
@@ -260,8 +258,8 @@ Gemini 1.5 provides a 1.5M todek window, paving the way...
 * *4.4 Data has specified characteristics (such as representativeness, sufficiency, fairness, etc.)*: Yes (DRS).
 * *4.5 Data are cleaned up and enhanced and can be used by the ML algorithm without any additional checking*: Yes (basic cleaning). One difficulty is that the raw data (pdf) are not usable as is and need to be decoded.
 * *4.6 Requirements allocated to the ML Data are satisfied*:
-* *4.7 Data pre-processing description is updated*:
-* *4.8 Data leakage is avoided*: Yes (ensured by data source)*:
+* *4.7 Data pre-processing description is updated*: Yes.
+* *4.8 Data leakage is avoided*: Yes (ensured by data source)*: Yes.
 * *4.9 Input dataset is divided into three datasets for training, validation, and test*:
 
 #### 5 ML Model Design Model
@@ -272,33 +270,34 @@ Gemini 1.5 provides a 1.5M todek window, paving the way...
 * *5.5 ML Model Description is developed from the ML Model to describe its architecture, its hyperparameters and parameters, its analytical/algorithmic syntax and semantic, its replication criteria, and its execution environment*:
 
 #### 6 ML Validation
-* *6.1 ML Model requirements comply with system/subsystem requirements*:
-* *6.2 ML Model requirements are accurate and consistent*:
-* *6.3 ML Model requirements are compatible with the target computer*:
-* *6.4 Data processing description is compatible with the target computer*:
-* *6.5 ML Model requirements are verifiable*:
-* *6.6 ML Model requirements conform to standards*:
-* *6.7 ML Model requirements are traceable to system/subsystem requirements*:
-* *6.8 ML Model Architecture Verification*:
-* *6.9 The ML architecture is compatible with the ML Model requirements*:
+* *6.1 ML Model requirements comply with system/subsystem requirements*: No (no specification).
+* *6.2 ML Model requirements are accurate and consistent*: No (no specification).
+* *6.3 ML Model requirements are compatible with the target computer*: No (no specification).
+* *6.4 Data processing description is compatible with the target computer*: No (no specification).
+* *6.5 ML Model requirements are verifiable*: No (no specification).
+* *6.6 ML Model requirements conform to standards*: No (no specification).
+* *6.7 ML Model requirements are traceable to system/subsystem requirements*: No (no specification).
+* *6.8 ML Model Architecture Verification*: I don't understand.
+* *6.9 The ML architecture is compatible with the ML Model requirements*: No (no specification).
 * *6.10 The ML architecture is consistent*: I don't understand.
-* *6.11 The ML architecture is verifiable*:
+* *6.11 The ML architecture is verifiable*: I don't understand.
 * *6.12 The ML architecture conforms to standards*: Yes, RAG architecture.
 
 #### 7 ML Model Verification
 * *7.1 The ML Model complies with the ML Model requirements*: [impossibble since Hallucination is Inevitable: An Innate Limitation of Large Language Models](https://arxiv.org/abs/2401.11817)
 * *7.2 The ML Model is accurate and consistent*:
 * *7.3 The ML Model is compatible with target computer*: No target computer.
-* *7.4 The ML Model is verifiable*:
+* *7.4 The ML Model is verifiable*: It's minimized, see [Retrieval Augmentation Reduces Hallucination in Conversation](https://arxiv.org/abs/2104.07567) and 
+[Chain-of-Thought Prompting Elicits Reasoning in Large Language Models](https://arxiv.org/abs/2201.11903).
 * *7.5 The ML Model conforms to standards*: Yes (reuse of state-of-the-art RAG).
-* *7.6 Verification of verification procedures*:
-* *7.7 Test procedures are correct*:
-* *7.8 Test results are correct, and discrepancies explained*:
-* *7.9 Test coverage of ML Data and Model requirements is achieved*:
-* *7.10 Test coverage of ML Model structure to the appropriate coverage criteria is achieved*:
+* *7.6 Verification of verification procedures*: No. But [Automated Unit Test Improvement using Large Language Models at Meta](https://arxiv.org/abs/2402.09171) 
+* *7.7 Test procedures are correct*: No.
+* *7.8 Test results are correct, and discrepancies explained*: No.
+* *7.9 Test coverage of ML Data and Model requirements is achieved*:  No.
+* *7.10 Test coverage of ML Model structure to the appropriate coverage criteria is achieved*: No.
 
 ### Data quality learning assurance objectives
-* *1 Nature of data (explicit definition of input variables)*: Textual with metadata (dates and categorical)*:
+* *1 Nature of data (explicit definition of input variables)*: Textual with metadata (dates and categorical)
 * *2 Ranges of data (minimum and maximum value, classes of categorical data)*: Can be achieved with a [`describe`](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.describe.html) or [`unique`](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Index.unique.html#pandas.Index.unique).
 * *3 Representativeness: distribution of data across MLCODD [numerical values distribution, flight or operating condition, ambient condition indicator (e.g., day temperature for a pressure sensor, day, or night indicator for an image, rain, or dust level, etc.)]*: by design the data is rather exhaustive, but missing other commercial standards that are FAA accepted (SAE, ASTM, MIL-SPEC, RTCA).
 * *4 Fairness (lack of bias)*: Yes, based on FAA objectives (by data source).
