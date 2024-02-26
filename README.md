@@ -207,7 +207,9 @@ The size of the dataset makes the project intractable on my personal computer, s
 
 As far as I know there are several ways to work on a document with LLM: pass the document in the context window (extremely resource intensive), fine-tune (very resource intensive), RAG (manageable).
 
-role: adapt role de' exper / task:  review against standard and rpviode advice / context: target audience, background information, scenario
+* *role*: you are an expert in all aspects of operations, airworthiness and certification for rotorcraft and airplanes including maintenance and engineering.
+* *task*: you provide detailed guidance to an applicant or an operator.
+* *context*: rotorcraft and airplanes operations and airworthiness in United States National Airspace. You are using resources from AIP, AIP, AC, Orders, FARS.
 
 ### AC-ORDER-HANDBOOK-AIP-AIM
 Blabla. Segmentation.
@@ -218,6 +220,7 @@ Blabla. Segmentation.
 Short intro based on https://haystack.deepset.ai/, [nlp book](https://www.oreilly.com/library/view/natural-language-processing/9781098136789/)
 
 [langchain](https://www.langchain.com/), [LlamaIndex](https://www.llamaindex.ai/), [Pinecone](https://www.pinecone.io/), [Weaciate](https://weaviate.io/)
+
 
 ## RAG
 
