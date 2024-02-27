@@ -29,6 +29,11 @@ And more specifically for the text documents released by the FAA:
 * FAA documents are well formatted (Q&A tables, consistent tables of content)
 * FAA documents have a high quality standard (Order 1000.36) compared to the best NLP dataset that one can find on Hugging Face. The notably natively include ["chain of thoughts"](https://arxiv.org/pdf/2201.11903.pdf) answers.
 
+Datasets are available here:
+* STCs with metadata, extracted description and limitations/conditions
+* DRS with metadata (documents requiring OCR have no text)
+* ACs, Orders with metadata and splitted paragaraphs
+
 # Data Collection
 ## Results on data collection
 DOT APIs are very easy to use and these are the steps that I followed to collect DRS data:
@@ -45,6 +50,8 @@ This is pretty straghtforward, but I hit several hard points:
 5. There also non-pdf and non-text files
 
 Note that Aeronautical Information Manual (AIM) and Aeronautical Information Publication (AIP) are two basic references in aviation. They are not in DRS, so I've added them manually to the dataset.
+
+[eCFR](https://www.ecfr.gov) is also another great ressource (can collect dockets from there), but it is already covered by [DRS](https://drs.faa.gov/).
 
 ## Other sources of data worth exploring
 The following data could also be an excellent source of data for an NLP project. I've not had the time to focus too much on those, but they would be well suited for a simple use case:
@@ -205,22 +212,26 @@ I wanted to analyse the documentary inflation over the years, but I stopped sinc
 ## ML applications
 The size of the dataset makes the project intractable on my personal computer, so I decided to narrow-down the usage domain.
 
-As far as I know there are several ways to work on a document with LLM: pass the document in the context window (extremely resource intensive), fine-tune (very resource intensive), RAG (manageable).
+As far as I know there are several ways to work on a document with LLM: pass the document corpus in the context window (only available on cloud-based solutions - extremely resource intensive during training and inference), LLM fine-tuning (corpus is virtually stored in the weights - very resource intensive during training), RAG (corpus is stored in a flexible database - manageable with a personal computer).
 
 [Retrieval Augmentation Reduces Hallucination in Conversation](https://arxiv.org/abs/2104.07567)
 
-
+I used the following prompt:
 * *role*: you are an expert in all aspects of operations, airworthiness and certification for rotorcraft and airplanes including maintenance and engineering.
 * *task*: you provide detailed guidance to an applicant or an operator.
-* *context*: rotorcraft and airplanes operations and airworthiness in United States National Airspace. You are using resources from AIP, AIP, AC, Orders, FARS.
+* *context*: rotorcraft and airplanes operations and airworthiness in United States National Airspace. You are using information from the following types of document: Aeronautical Information Publication (AIP), Aeronautical Information Manual (AIM), Advisory Circulars (AC), FAA Orders, FAA Order Handbooks, Federal Aviation Regulations (Title 14 CFR FAR).
 
 ### AC-ORDER-HANDBOOK-AIP-AIM
-Blabla. Segmentation. Chain of thoughts. Paragraph decomposition (helps with performance and robustness).
+Blabla. Segmentation to improve robustness and performance. Chain of thoughts. Paragraph decomposition (helps with performance and robustness).
 
 ### RAG-use case
 
 #### Why RAG
 Short intro based on https://haystack.deepset.ai/, [nlp book](https://www.oreilly.com/library/view/natural-language-processing/9781098136789/)
+
+[haystack.deepset.ai](https://haystack.deepset.ai/)
+
+[SciPhi-AI](https://github.com/SciPhi-AI/R2R)
 
 [langchain](https://www.langchain.com/), [LlamaIndex](https://www.llamaindex.ai/), [Pinecone](https://www.pinecone.io/), [Weaciate](https://weaviate.io/)
 
