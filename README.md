@@ -27,7 +27,7 @@ From a pure ML perspective, aviation data offers lots of benefits:
 And more specifically for the text documents released by the FAA:
 * FAA offers a powerful API
 * FAA documents are well formatted (Q&A tables, consistent tables of content)
-* FAA documents have a high quality standard (Order 1000.36) compared to the best NLP dataset that one can find on Hugging Face. The notably natively include ["chain of thoughts"](https://arxiv.org/pdf/2201.11903.pdf) answers.
+* FAA documents have a high quality standard (Order 1000.36) compared to the best NLP dataset that one can find on Hugging Face. The notably natively include ["chain of thoughts"](https://arxiv.org/pdf/2201.11903.pdf)-like answers.
 
 Datasets are available here:
 * STCs with metadata, extracted description and limitations/conditions
@@ -221,8 +221,22 @@ I used the following prompt:
 * *task*: you provide detailed guidance to an applicant or an operator.
 * *context*: rotorcraft and airplanes operations and airworthiness in United States National Airspace. You are using information from the following types of document: Aeronautical Information Publication (AIP), Aeronautical Information Manual (AIM), Advisory Circulars (AC), FAA Orders, FAA Order Handbooks, Federal Aviation Regulations (Title 14 CFR FAR).
 
-### AC-ORDER-HANDBOOK-AIP-AIM
-Blabla. Segmentation to improve robustness and performance. Chain of thoughts. Paragraph decomposition (helps with performance and robustness).
+### Working with a subset: AC, ORDER, HANDBOOK, AIP, AIM, FAR
+The DRS database is made of various document types that do not belong to the same usage domain (e.g. space travels vs. civil flights). Some documents are also a mere database (e.f. PMA).
+
+I decided to focus on a subset of core-engineering-aviation-knowledge documents. Those documents are also generally well written and contain detailed answers (important for LLM performance). The main issue is that I had to develop a manual tool to split those documents into sub-sections (also very important for LLM performance). Many of those documents (e.g. AC 29 which is about 1000 pages) deal with many topics.
+* [Advisory Circulars](https://www.faa.gov/regulations_policies/advisory_circulars/) provide guidance to operators, maintainers, installers, applicants...
+* [Orders](https://www.faa.gov/regulations_policies/orders_notices/) detail procedures that the FAA follows.
+* [Handbooks](https://www.faa.gov/regulations_policies/handbooks_manuals) explain basic aeronautics knowledge.
+* [Aeronautical Information Publication](https://www.faa.gov/air_traffic/publications/atpubs/aip_html/part1_gen_section_0.1.html) is basic airman knowledge.
+* [Aeronautical Information Manual](https://www.faa.gov/air_traffic/publications/atpubs/aim_html/): is more basic airman knowledge.
+* [Fereral Regulation](https://www.ecfr.gov/current/title-14): the US federal regulation.
+
+I could have used other documents (TSO)... but that's already a good start.
+
+We end up with the majority of documents below 5000 tokens (see histogram below), which is high but still manageable with RAGs with sparse encoding. We also have many documents below ~ 300 words which is good news also for performance (dense encoding). It is also obvious that there were several issues that led me with documents with an unacceptable number of words. I finally want to stress out that this dataset includes also historical (obsolete) documents.
+
+![plot](./images/94_number_of_words_ACsORDERS.png)
 
 ### RAG-use case
 
