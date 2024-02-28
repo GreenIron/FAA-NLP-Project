@@ -6,15 +6,13 @@ This is an in-work personal NLP project dealing with FAA documentation: use case
 # Introduction
 
 ## Motivation
-While aviation is a heavy producer of documentation, most of the aviation-related database publicly available on popular ML websites (kaggle, huggingface, google data) is about unformatted tabular data (e.g. accident rates, airport traffic, helicopter types) and not about NLP. In the same time legal has had a several datasets available.
-This is quite unusual consedering that aviation data is very good at producing complex, high-quality and standardized documents or more generally any sorts of communication (e.g. GAMA standards, ATC standards).
+While aviation is a heavy producer of documentation, most of the aviation-related database publicly available on popular ML websites (kaggle, huggingface, google data) is about unformatted tabular data (e.g. accident rates, airport traffic, helicopter types) and not about NLP. In the same time legal has had a several datasets available. This is quite unusual consedering that aviation data is very good at producing complex, high-quality and standardized documents or more generally any sorts of communication (e.g. GAMA standards, ATC standards).
 
-While it takes at least 10 years for a commercial-level technology to hit aviation, data has been at the core of airborne aviation for a lot quite some times (CVFDR, telemetry...).
-FAA has been offering for several years a moderm and powerful platform to browse all the publicly available FAA documentation: [DRS](https://drs.faa.gov/). This platform offers tremendous capabilities and an API (one of the many DOT platforms) to programaticaly acccess its documentation.
+While it takes at least 10 years for a commercial-level technology to hit aviation, data has been at the core of airborne aviation for a lot quite some times (CVFDR, telemetry...). FAA has been offering for several years a moderm and powerful platform to browse all the publicly available FAA documentation: [DRS](https://drs.faa.gov/). This platform offers tremendous capabilities and an API (one of the many DOT platforms) to programaticaly acccess its documentation.
 
 I truely encourage you to take a look at it right now since this will be the primary source of data.
 
-Non governmetal platforms like [AHST](https://ushst.org/) offer also high quality documentation, but have no API.
+Non-governmetal platforms like [AHST](https://ushst.org/) offer also high quality documentation (this one on helicopter safety), but have no API.
 
 ## Why aviation data
 The starting block of any ML project is to get to intimately familiar with the data. Since I work in aviation (rotorcraft), I've a professional interest in knowing more about all types of documents (format and conten)t that the FAA produces (with a focus on rotorcrafts).
@@ -29,7 +27,7 @@ And more specifically for the text documents released by the FAA:
 * FAA documents are well formatted (Q&A tables, consistent tables of content)
 * FAA documents have a high quality standard (Order 1000.36) compared to the best NLP dataset that one can find on Hugging Face. The notably natively include ["chain of thoughts"](https://arxiv.org/pdf/2201.11903.pdf)-like answers.
 
-Datasets are available here:
+Overall I ended with the folloiwing datasets ([parquet](https://parquet.apache.org/) format):
 * STCs with metadata, extracted description and limitations/conditions
 * DRS with metadata (documents requiring OCR have no text)
 * ACs, Orders with metadata and splitted paragaraphs
@@ -42,7 +40,9 @@ DOT APIs are very easy to use and these are the steps that I followed to collect
 3. Collect the index table for each DRS doc type (~ 1 hour)
 4. Collect each file or text from each document found in each index table (several months)
 
-This is pretty straghtforward, but I hit several hard points:
+Check [#10](./10_stc_collection.ipynb) for STCs and [#90](./90_gendoc_collection.ipynb) for all DRS.
+
+This is pretty straightforward, but I did hit several hard points:
 1. DRS website changed a little bit, so the code had to follow
 2. Some files caused some issue (filename with special characters like &)
 3. After some times my IP address got banned, so I started using a VPN to finish my data collection
@@ -71,7 +71,7 @@ STC is the master document that defines the type design of an aircract modificat
 * diverse
 * long history 
 
-## Metadata only (with a focus on rotorcrafts)
+## Metadata only (with a focus on rotorcrafts) [#20](./20_stc_metadata_exploration.ipynb)
 The DRS metadadata already offers a wealth of information before even starting exploring the text content. I've only analysed a fraction of the metadata and the following is another fraction of this analysis (there is more in the different Python use cases). It's really a high-level analysis to get to know the data better, but I didn't push towards more complex data mining methods (dimensiality reduction, clustering... scikit-learn is the best source I know to start a ML project). Maybe something for later.
 
 The metadata file has as many rows for an STC as there are issuances. Date of STC (re)-issuance is given by "stcStatusDate". A STC is reissued for example to add a new configuration (e.g. obsolescence). Note that a STC can be updated (e.g. minor change for editorial changed) and not reissued and in that case the latest update will be indicated in the field "docLastModifiedDate".
@@ -144,11 +144,11 @@ The following two pictures show the word distributions for those two fields. Des
 
 ![plot](./images/22_number_of_words_in_limitations.png)
 
-### (Lack of) Results
+### (Lack of) Results [#22](./22_stc_content_exploration.ipynb) [#25](./25_stc_text_exploration.ipynb)
 I failed to find a decent LLM application:
-* zero shot using 7B LLMs (Ollama) yielded poor results (guessing meta data based on Description, Limitations/Conditions).
+* zero shot using 7B LLMs (LM Studio) yielded poor results (classification: guessing meta data based on Description, Limitations/Conditions, guessing the ATA).
 * ATA-classification (using DRS MMEL and JASC) performances were poor.
-* Overall I could not find any interresting use cases (e.g. guess the Description based on Limitations/Conditions).
+* Overall I could not find any interresting use cases (using [nlp book](https://www.oreilly.com/library/view/natural-language-processing/9781098136789/) as a basis).
 
 The key problems might be that the STC Description and Limitations/Conditions are not informative enough and are quite independent between each others from the metadata (there are no patterns to learn or represent). Another problem is that the Description is often based on the commercial name of the modification/equipment, which is too much of a specific usage domain. Unlike a catalogue, it is not meant to provide a commercial description. We would need to scrap data from all STC holders, correlate the P/N with the catalogue description to have more information.
 
@@ -163,7 +163,7 @@ Other than that my main findings are that:
 
 # All DRS and the other non DRS documents
 
-## Data collection
+## Data collection [#90](./90_gendoc_collection.ipynb)
 It took me about 3 months to collect all DRS data on my personal computer (working 1 or 2 hours before going to bed, so not a full time job), but many more months to set up a functional data collection routine. I collected all the DRS data, plus a few more (AIM, AIP). There was no signigicant difficulties, except being patient and improving the code to come up with any exceptions found on DRS (e.g. new data format, attachments, time-out, pdf crashes). 
 The whole raw documents dataset (mainly pdf, but also doc, xls, html) is about 55GB.
 
@@ -212,11 +212,11 @@ I wanted to analyse the documentary inflation over the years, but I stopped sinc
 ## ML applications
 The size of the dataset makes the project intractable on my personal computer, so I decided to narrow-down the usage domain.
 
-As far as I know there are several ways to work on a document with LLM: pass the document corpus in the context window (only available on cloud-based solutions - extremely resource intensive during training and inference), LLM fine-tuning (corpus is virtually stored in the weights - very resource intensive during training), RAG (corpus is stored in a flexible database - manageable with a personal computer).
+As far as I know there are several ways to work on a document with LLM (arxiv source here): pass the document corpus in the context window (only available on cloud-based solutions - extremely resource intensive during training and inference), LLM fine-tuning (corpus is virtually stored in the weights - very resource intensive during training), RAG (corpus is stored in a flexible database - manageable with a personal computer).
 
 [Retrieval Augmentation Reduces Hallucination in Conversation](https://arxiv.org/abs/2104.07567)
 
-I used the following prompt:
+I use the following prompt:
 * *role*: you are an expert in all aspects of operations, airworthiness and certification for rotorcraft and airplanes including maintenance and engineering.
 * *task*: you provide detailed guidance to an applicant or an operator.
 * *context*: rotorcraft and airplanes operations and airworthiness in United States National Airspace. You are using information from the following types of document: Aeronautical Information Publication (AIP), Aeronautical Information Manual (AIM), Advisory Circulars (AC), FAA Orders, FAA Order Handbooks, Federal Aviation Regulations (Title 14 CFR FAR).
@@ -224,7 +224,7 @@ I used the following prompt:
 ### Working with a subset: AC, ORDER, HANDBOOK, AIP, AIM, FAR
 The DRS database is made of various document types that do not belong to the same usage domain (e.g. space travels vs. civil flights). Some documents are also a mere database (e.f. PMA).
 
-I decided to focus on a subset of core-engineering-aviation-knowledge documents. Those documents are also generally well written and contain detailed answers (important for LLM performance). The main issue is that I had to develop a manual tool to split those documents into sub-sections (also very important for LLM performance). Many of those documents (e.g. AC 29 which is about 1000 pages) deal with many topics.
+I decided to focus on a subset of core-engineering-aviation-knowledge documents. Those documents are also generally well written and contain detailed answers (important for LLM performance). The main issue is that I had to develop a manual tool to split those documents into sub-sections (also very important for LLM performance). This took me a while using regex, see [#92](./92_split_paragraphs.ipynb). Many of those documents (e.g. AC 29 which is about 1000 pages) deal with many topics.
 * [Advisory Circulars](https://www.faa.gov/regulations_policies/advisory_circulars/) provide guidance to operators, maintainers, installers, applicants...
 * [Orders](https://www.faa.gov/regulations_policies/orders_notices/) detail procedures that the FAA follows.
 * [Handbooks](https://www.faa.gov/regulations_policies/handbooks_manuals) explain basic aeronautics knowledge.
@@ -241,42 +241,35 @@ We end up with the majority of documents below 5000 tokens (see histogram below)
 ### RAG-use case
 
 #### Why RAG
-Short intro based on https://haystack.deepset.ai/, [nlp book](https://www.oreilly.com/library/view/natural-language-processing/9781098136789/)
+Short intro based on https://haystack.deepset.ai/ and [nlp book](https://www.oreilly.com/library/view/natural-language-processing/9781098136789/).
 
-[haystack.deepset.ai](https://haystack.deepset.ai/)
+Explain why I chose RAG (much better at not hallucinating),
 
-[SciPhi-AI](https://github.com/SciPhi-AI/R2R)
-
-[langchain](https://www.langchain.com/), [LlamaIndex](https://www.llamaindex.ai/), [Pinecone](https://www.pinecone.io/), [Weaciate](https://weaviate.io/)
-
-RAG much better at not hallucinating
+Explain why I chose [haystack.deepset.ai](https://haystack.deepset.ai/) over other ones like ([SciPhi-AI](https://github.com/SciPhi-AI/R2R), [langchain](https://www.langchain.com/), [LlamaIndex](https://www.llamaindex.ai/), [Pinecone](https://www.pinecone.io/), [Weaciate](https://weaviate.io/)).
 
 ### LLM fine tuning
-
-[check this](https://generallyintelligent.substack.com/p/fine-tuning-mistral-7b-on-magic-the)
-[or this](https://helixml.substack.com/p/how-we-got-fine-tuning-mistral-7b)
-
+Expand on fine tuning based on [check this](https://generallyintelligent.substack.com/p/fine-tuning-mistral-7b-on-magic-the), [or this](https://helixml.substack.com/p/how-we-got-fine-tuning-mistral-7b)
 
 ### Zero-shot with Gemini 1.5
-Gemini 1.5 provides a 1.5M todek window, paving the way...
+Expand on Zero-shot with Gemini 1.5
 
 # ARP6983 Criteria Review
 
-### MLDL objectives
+## MLDL objectives
 
-#### 1 ML Constituent ODD
+### 1 ML Constituent ODD
 * *1.1 The MLCODD is characterized*: Yes. The ODD is actually explicitly defined in the dataset itself for most of it. Otherwise it is detailed on the FAA website.
 * *1.2 AN ML Data impact analysis is developed from the MLCODD*: Unclear?
 * *1.3 Any limitation of use to the ML-based System/Subsystem processes is provided, including the System Safety Assessment process*: None.
 
-#### 2 ML Constituent Requirements
+### 2 ML Constituent Requirements
 * *2.1 ML Constituent requirements are developed for each ML Constituent*: 
 * *2.2 Derived ML Constituent requirements are defined and provided to the ML-based System/Subsystem processes, including the System Safety Assessment process*:
 
-#### 3 ML Environment Set Up
+### 3 ML Environment Set Up
 * *3.1 The MLDL environment is selected and defined*: Based on conda [`environment.yml`](https://conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html#activating-an-environment).
 
-#### 4 ML Data Management
+### 4 ML Data Management
 * *4.1 Data sources are identified and selected*: Yes (DRS).
 * *4.1 Lack of undesirable bias is ensured*: Should be N/A.
 * *4.3 Data required for training, validation, and test datasets is collected*: Yes (DRS).
@@ -287,14 +280,14 @@ Gemini 1.5 provides a 1.5M todek window, paving the way...
 * *4.8 Data leakage is avoided*: Yes (ensured by data source)*: Yes.
 * *4.9 Input dataset is divided into three datasets for training, validation, and test*:
 
-#### 5 ML Model Design Model
+### 5 ML Model Design Model
 * *5.1 The ML Model architecture is developed from the ML Constituent requirements*:
 * *5.2 ML Model requirements are developed from the ML Constituent requirements and the ML  environment*:
 * *5.3 Derived ML Model requirements and their rationale are defined and provided to the ML Constituent requirements process*:
 * *5.4 The ML Model is built, trained, and optimized from the ML Constituent requirements and if applicable from the ML Model requirements*:
 * *5.5 ML Model Description is developed from the ML Model to describe its architecture, its hyperparameters and parameters, its analytical/algorithmic syntax and semantic, its replication criteria, and its execution environment*:
 
-#### 6 ML Validation
+### 6 ML Validation
 * *6.1 ML Model requirements comply with system/subsystem requirements*: No (no specification).
 * *6.2 ML Model requirements are accurate and consistent*: No (no specification).
 * *6.3 ML Model requirements are compatible with the target computer*: No (no specification).
@@ -308,7 +301,7 @@ Gemini 1.5 provides a 1.5M todek window, paving the way...
 * *6.11 The ML architecture is verifiable*: I don't understand.
 * *6.12 The ML architecture conforms to standards*: Yes, RAG architecture.
 
-#### 7 ML Model Verification
+### 7 ML Model Verification
 * *7.1 The ML Model complies with the ML Model requirements*: [impossibble since Hallucination is Inevitable: An Innate Limitation of Large Language Models](https://arxiv.org/abs/2401.11817)
 * *7.2 The ML Model is accurate and consistent*:
 * *7.3 The ML Model is compatible with target computer*: No target computer.
@@ -321,7 +314,7 @@ Gemini 1.5 provides a 1.5M todek window, paving the way...
 * *7.9 Test coverage of ML Data and Model requirements is achieved*:  No.
 * *7.10 Test coverage of ML Model structure to the appropriate coverage criteria is achieved*: No.
 
-### Data quality learning assurance objectives
+## Data quality learning assurance objectives
 * *1 Nature of data (explicit definition of input variables)*: Textual with metadata (dates and categorical)
 * *2 Ranges of data (minimum and maximum value, classes of categorical data)*: Can be achieved with a [`describe`](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.describe.html) or [`unique`](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Index.unique.html#pandas.Index.unique).
 * *3 Representativeness: distribution of data across MLCODD [numerical values distribution, flight or operating condition, ambient condition indicator (e.g., day temperature for a pressure sensor, day, or night indicator for an image, rain, or dust level, etc.)]*: by design the data is rather exhaustive, but missing other commercial standards that are FAA accepted (SAE, ASTM, MIL-SPEC, RTCA).
