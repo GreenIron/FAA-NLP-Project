@@ -1,25 +1,25 @@
 # A NLP project on FAA documents
 
 ## Abstract
-This is an in-work personal NLP project dealing with FAA documentation: use case definition, data source identification, data collection, data cleaning, data mining and some RAG and LLM fine-tuning.
+This is an in-work personal NLP project dealing with FAA documentation: use case definition, data source identification, data collection, data preparation, data mining and some RAG and LLM fine-tuning.
 
 # Introduction
 
 ## Motivation
-While aviation is a heavy producer of documentation, most of the aviation-related database publicly available on popular ML websites (kaggle, huggingface, google data) is about unformatted tabular data (e.g. accident rates, airport traffic, helicopter types) and not about NLP. In the same time legal has had a several datasets available. This is quite unusual consedering that aviation data is very good at producing complex, high-quality and standardized documents or more generally any sorts of communication (e.g. GAMA standards, ATC standards).
+While aviation is a heavy producer of documentation, most of the aviation-related database publicly available on popular ML websites (kaggle, huggingface, google data) is about unformatted tabular data (e.g. accident rates, airport traffic, helicopter types) and not about NLP. In the same time legal has had a several datasets available. This is quite unusual considering that aviation data is very good at producing complex, high-quality and standardized documents or more generally any sorts of communication (e.g. GAMA standards, ATC standards).
 
-While it takes at least 10 years for a commercial-level technology to hit aviation, data has been at the core of airborne aviation for a lot quite some times (CVFDR, telemetry...). FAA has been offering for several years a moderm and powerful platform to browse all the publicly available FAA documentation: [DRS](https://drs.faa.gov/). This platform offers tremendous capabilities and an API (one of the many DOT platforms) to programaticaly acccess its documentation.
+While it takes at least 10 years for a commercial-level technology to hit aviation, data has been at the core of airborne aviation for a lot quite some times (CVFDR, telemetry...). FAA has been offering for several years a modern and powerful platform to browse all the publicly available FAA documentation: [DRS](https://drs.faa.gov/). This platform offers tremendous capabilities and an API (one of the many DOT platforms) to programaticaly acccess its documentation.
 
 I truely encourage you to take a look at it right now since this will be the primary source of data.
 
-Non-governmetal platforms like [AHST](https://ushst.org/) offer also high quality documentation (this one on helicopter safety), but have no API.
+Non-governmental platforms like [AHST](https://ushst.org/) offer also high quality documentation (this one on helicopter safety), but have no API.
 
 ## Why aviation data
-The starting block of any ML project is to get to intimately familiar with the data. Since I work in aviation (rotorcraft), I've a professional interest in knowing more about all types of documents (format and conten)t that the FAA produces (with a focus on rotorcrafts).
+The starting block of any ML project is getting intimately familiar with the data. Since I work in aviation (rotorcraft), I've a professional interest in knowing more about all types of documents (format and content) that the FAA produces (with a focus on rotorcrafts).
 
 From a pure ML perspective, aviation data offers lots of benefits:
 * because of the safety constraints, aviation structuraly produces lots of data in various format 
-* aviation data is diversifed (e.g. produced by people with various background) and standardized (FAA Forms\, Tech logs, ATC communication, ARINC 429 GAMA, accident reports...)
+* aviation data is diversifed (e.g. produced and consumed by people with various background) and standardized (FAA Forms\, Tech logs, ATC communication, ARINC 429 GAMA, accident reports...)
 * aviation data has been around for many decades
 
 And more specifically for the text documents released by the FAA:
@@ -27,7 +27,7 @@ And more specifically for the text documents released by the FAA:
 * FAA documents are well formatted (Q&A tables, consistent tables of content)
 * FAA documents have a high quality standard (Order 1000.36) compared to the best NLP dataset that one can find on Hugging Face. The notably natively include ["chain of thoughts"](https://arxiv.org/pdf/2201.11903.pdf)-like answers.
 
-Overall I ended with the folloiwing datasets ([parquet](https://parquet.apache.org/) format):
+Overall I ended with the following datasets ([parquet](https://parquet.apache.org/) format):
 * STCs with metadata, extracted description and limitations/conditions
 * DRS with metadata (documents requiring OCR have no text)
 * ACs, Orders with metadata and splitted paragaraphs
@@ -49,17 +49,17 @@ This is pretty straightforward, but I did hit several hard points:
 4. On top of the main file, DRS offers also "Attachments/Public Comments" documents. As of today those are not searchable with DRS and not in the DRS Document Types Metadata Mapping file.
 5. There also non-pdf and non-text files
 
-Note that Aeronautical Information Manual (AIM) and Aeronautical Information Publication (AIP) are two basic references in aviation. They are not in DRS, so I've added them manually to the dataset.
+Aeronautical Information Manual (AIM) and Aeronautical Information Publication (AIP) are two basic references in aviation. They are not in DRS, so I've added them manually to the dataset.
 
-[eCFR](https://www.ecfr.gov) is also another great ressource (can collect dockets from there), but it is already covered by [DRS](https://drs.faa.gov/).
+[eCFR](https://www.ecfr.gov) is also another great ressource (can collect dockets from there), but it is already covered in [DRS](https://drs.faa.gov/).
 
 ## Other sources of data worth exploring
-The following data could also be an excellent source of data for an NLP project. I've not had the time to focus too much on those, but they would be well suited for a simple use case:
-* public comments are organized as Q&A tables. They are generally very nicelly formatted so that a tabular extrator libraty should work (sometimes alswer formatted in csv like files). The answer provided by the FAA is not "right" like what can be found in other factual Q&A database, but this could still be a good starting point.
+The following data could also be an excellent source of data for an NLP use case, but I've not had the time to focus too much on those:
+* public comments are organized as Q&A tables. They are generally very nicelly formatted so that a tabular extrator library should work (and even sometimes directly in csv format). The answer provided by the FAA is not "right" like what can be found in other factual Q&A database, but this could still be a good starting point.
 * AC 43-16A - General Aviation Maintenance Alerts offers also an excelent source of maintenance database
 * MMELs are also well formatted, but definitely less diversified
 * FAA DER training center (learning documents and Q&A)
-* all the DRS missing data and all the documents which were discontinued to exist
+* all the DRS missing data and all the documents which were discontinued to exist. Identifying and explaining missing data is important for data quality and bias mitigation.
 
 # A first try with STC (Supplemental Type Certificate)
 
@@ -72,21 +72,21 @@ STC is the master document that defines the type design of an aircract modificat
 * long history 
 
 ## Metadata only (with a focus on rotorcrafts) [#20](./20_stc_metadata_exploration.ipynb)
-The DRS metadadata already offers a wealth of information before even starting exploring the text content. I've only analysed a fraction of the metadata and the following is another fraction of this analysis (there is more in the different Python use cases). It's really a high-level analysis to get to know the data better, but I didn't push towards more complex data mining methods (dimensiality reduction, clustering... scikit-learn is the best source I know to start a ML project). Maybe something for later.
+The DRS metadadata already offers a wealth of information before even exploring the text content. I've only analysed a fraction of the metadata and the following is another fraction of this analysis. It's really a high-level analysis to get to know the data better, but I didn't push towards more complex data mining methods (dimensiality reduction, clustering... scikit-learn is the best source I know to start a ML project). Maybe something for later.
 
 The metadata file has as many rows for an STC as there are issuances. Date of STC (re)-issuance is given by "stcStatusDate". A STC is reissued for example to add a new configuration (e.g. obsolescence). Note that a STC can be updated (e.g. minor change for editorial changed) and not reissued and in that case the latest update will be indicated in the field "docLastModifiedDate".
 "drs:stcAplicationDate" corresponds to the application date for the firs STC issuance.
 
 * Number of STC (documents):
   * indexed: 76416
-  * with PDF (usable): 43818
+  * with PDF (usable for text content analysis): 43818
 
 * Sanity check:
   * only one broken PDF ([SA00765DE](https://drs.faa.gov/browse/excelExternalWindow/2F49BD200CEC24DD86257F5600610445.0001?modalOpened=true))
   * very few abnormal dates (<50)
   * very few headers typos for the DRS metadadata ("Document Type name in DRS ", "Deafult  Sort By")
 
-* *Rotorcraft STCs reissuance distribution*: there is a period (which is remarkable) that is ~3 years, but looking more closely revelas that the actual period is more like 1.6 years (there is another peak around 7 yeahs (~1.7*4)). It could be interesting to filter by ATA, company, ACO... to try to consolidate or explain this pattern. Another other interesting observation is that is period is not consitent when we switch to airplanes.
+* *Rotorcraft STCs reissuance distribution*: there is a period (which is remarkable) that is ~3 years, but looking more closely reveals that the actual period is more like 1.6 years (there is another peak around 7 years (~1.7*4)). It could be interesting to filter by ATA, company, ACO... to try to consolidate or explain this pattern. Another other interesting observation is that is period is not consitent when we switch to airplanes.
 
 ![plot](./images/20_rotorcraft_reissuance.png)
 
@@ -118,7 +118,7 @@ The metadata file has as many rows for an STC as there are issuances. Date of ST
 
 ![plot](./images/20_rotorcraft_stcStatusDate_by_day_of_week.png)
 
-* *Helicopter STCs by holder between 1990 and 2000*: a big surprise to me was that American Eurocopter (now Airbus Helicopters, Inc.) was one of the largest issuers of STC certificates (but a detailed analysis of the STCs show that those are not complex) while still reamaining a rather small company. It's also worth noting that the different companies have very different business models (ODA doing worth for third parties, ODA doing only internal work, companies with core products working with ACO).
+* *Helicopter STCs by holder between 1990 and 2000*: a big surprise to me was that American Eurocopter (now Airbus Helicopters, Inc.) was one of the largest issuers of STC certificates (but a detailed analysis of the STCs show that those are not complex) while still reamaining a rather small company. It's also worth noting that companies have very different business models (ODA doing work for third parties, ODA doing only internal work, companies with core products working with ACO).
 
 ![plot](./images/20_STC_by_STC_holder_helicopter_1900.png)
 
@@ -126,7 +126,7 @@ The metadata file has as many rows for an STC as there are issuances. Date of ST
 
 ![plot](./images/20_STCs_by_stcProductSubType.png)
 
-I could keep going on and on (e.g. looking at time drifts, comparing single engine vs. multi-engines, focusing on a region or on a company, crossing with other databasis...), but that's enough histograms for today. More details are in the jupiter notebooks.
+I could keep going on and on (e.g. looking at time drifts, comparing single engine vs. multi-engines, focusing on a region or on a company, crossing with other database...), but that's enough histograms for today.
 
 ## Text analysis
 ### Getting to know the data
@@ -136,9 +136,9 @@ GCP OCR proved to quite uneffective on a fraction of scanned pdfs (SA00005MC-D) 
 STCs are well defined and the format has remained pretty much the same over the years. The key fields from a text standpoint are the "Descriptions" and the "Limitations/Conditions". The rest of the data is quite redundant with the metadata. Let's look at some examples first:
 * accross the ages: [old](https://drs.faa.gov/browse/excelExternalWindow/BA172489A7E9DA1586257CD30047CF76.0001?modalOpened=true) , [recent](https://drs.faa.gov/browse/excelExternalWindow/DRSDOCID128075530320230314172310.0001)
 * description: [short](https://drs.faa.gov/browse/excelExternalWindow/CA21490D878D3C63862574C600496658.0001?modalOpened=true), [average](https://drs.faa.gov/browse/excelExternalWindow/3FE1351336C0748F8625831400585C06.0001?modalOpened=true), [long](https://drs.faa.gov/browse/excelExternalWindow/17914C2EEDFFC8C98625804300770386.0001?modalOpened=true)
-* limitations/Conditions: [short](https://drs.faa.gov/browse/excelExternalWindow/DRSDOCID125280334620221128154006.0001?modalOpened=true), [average](https://drs.faa.gov/browse/excelExternalWindow/3FE1351336C0748F8625831400585C06.0001?modalOpened=true), [long](https://drs.faa.gov/browse/excelExternalWindow/EF198F621A3B2AA9862585D90044ACBF.0001?modalOpened=true)
+* limitations/conditions: [short](https://drs.faa.gov/browse/excelExternalWindow/DRSDOCID125280334620221128154006.0001?modalOpened=true), [average](https://drs.faa.gov/browse/excelExternalWindow/3FE1351336C0748F8625831400585C06.0001?modalOpened=true), [long](https://drs.faa.gov/browse/excelExternalWindow/EF198F621A3B2AA9862585D90044ACBF.0001?modalOpened=true)
 
-The following two pictures show the word distributions for those two fields. Description is a Gama distribution, while Limitations/Conditions is more multimodal. That's not surprising since the Description is more formatted, while the Limitations/Conditions fields is often used a field for secondary informations.
+The following two pictures show the word distributions for those two fields. Description is a Gama distribution, while Limitations/Conditions is more multimodal. That's not surprising since the Description is more formatted, while the Limitations/Conditions field is often used a field to register auxiliary information.
 
 ![plot](./images/22_number_of_words_in_description.png)
 
@@ -158,7 +158,7 @@ Following picture shows the lack of correlation between Description and a Limita
 
 Other than that my main findings are that:
 * There is some overlap between what's a Description vs. a Limitations/Conditions. For example the RFMS and ICA can be found in one on the other.
-* Limitations/Conditions is sometimes used for configuration control.
+* Limitations/Conditions is sometimes used for additional configuration control.
 * There is a wide variability on how those fields are used (depth of explainations).
 
 # All DRS and the other non DRS documents
@@ -245,10 +245,10 @@ Short intro based on https://haystack.deepset.ai/ and [nlp book](https://www.ore
 
 Explain why I chose RAG (much better at not hallucinating),
 
-Explain why I chose [haystack.deepset.ai](https://haystack.deepset.ai/) over other ones like ([SciPhi-AI](https://github.com/SciPhi-AI/R2R), [langchain](https://www.langchain.com/), [LlamaIndex](https://www.llamaindex.ai/), [Pinecone](https://www.pinecone.io/), [Weaciate](https://weaviate.io/)).
+Explain why I chose [haystack.deepset.ai](https://haystack.deepset.ai/) over other ones ([SciPhi-AI](https://github.com/SciPhi-AI/R2R), [langchain](https://www.langchain.com/), [LlamaIndex](https://www.llamaindex.ai/), [Pinecone](https://www.pinecone.io/), [Weaciate](https://weaviate.io/)).
 
 ### LLM fine tuning
-Expand on fine tuning based on [check this](https://generallyintelligent.substack.com/p/fine-tuning-mistral-7b-on-magic-the), [or this](https://helixml.substack.com/p/how-we-got-fine-tuning-mistral-7b)
+Expand on fine tuning based on [this](https://generallyintelligent.substack.com/p/fine-tuning-mistral-7b-on-magic-the), [this](https://helixml.substack.com/p/how-we-got-fine-tuning-mistral-7b) or [this]https://www.oreilly.com/library/view/hands-on-large-language/9781098150952/).
 
 ### Zero-shot with Gemini 1.5
 Expand on Zero-shot with Gemini 1.5
@@ -335,9 +335,6 @@ Expand on Zero-shot with Gemini 1.5
 * *18 Format of dataset files*: Pandas [`dataframe`](https://pandas.pydata.org/pandas-docs/stable/reference/frame.html#dataframe).
 * *19 Security tag(s)*: I don't understand.
 * *20 Monitoring or Recording tag(s)*: I don't understand, but should be ensured by US gov.
-
-# Conclusion
-
 
 
 <!--
