@@ -28,9 +28,9 @@ And more specifically for the text documents released by the FAA:
 * FAA documents have a high quality standard (Order 1000.36) compared to the best NLP dataset that one can find on Hugging Face. The notably natively include ["chain of thoughts"](https://arxiv.org/pdf/2201.11903.pdf)-like answers.
 
 Overall I ended with the following datasets ([parquet](https://parquet.apache.org/) format):
-* STCs with metadata, extracted description and limitations/conditions
-* DRS with metadata (documents requiring OCR have no text)
-* ACs, Orders with metadata and splitted paragaraphs
+* STCs with metadata, extracted description and limitations/conditions (~50MB)
+* DRS with metadata (documents requiring OCR have no text) (~100MB)
+* ACs, Orders with metadata and splitted paragaraphs (>1GB)
 
 # Data Collection
 ## Results on data collection
@@ -248,7 +248,7 @@ Explain why I chose RAG (much better at not hallucinating),
 Explain why I chose [haystack.deepset.ai](https://haystack.deepset.ai/) over other ones ([SciPhi-AI](https://github.com/SciPhi-AI/R2R), [langchain](https://www.langchain.com/), [LlamaIndex](https://www.llamaindex.ai/), [Pinecone](https://www.pinecone.io/), [Weaciate](https://weaviate.io/)).
 
 ### LLM fine tuning
-Expand on fine tuning based on [this](https://generallyintelligent.substack.com/p/fine-tuning-mistral-7b-on-magic-the), [this](https://helixml.substack.com/p/how-we-got-fine-tuning-mistral-7b) or [this]https://www.oreilly.com/library/view/hands-on-large-language/9781098150952/).
+Expand on fine tuning based on [this](https://generallyintelligent.substack.com/p/fine-tuning-mistral-7b-on-magic-the), [this](https://helixml.substack.com/p/how-we-got-fine-tuning-mistral-7b) or [this](https://www.oreilly.com/library/view/hands-on-large-language/9781098150952/).
 
 ### Zero-shot with Gemini 1.5
 Expand on Zero-shot with Gemini 1.5
