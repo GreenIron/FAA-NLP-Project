@@ -14,8 +14,16 @@ I truely encourage you to take a look at it right now since this will be the pri
 
 Non-governmental platforms like [AHST](https://ushst.org/) offer also high quality documentation (this one on helicopter safety), but have no API.
 
+Most of the ACs and TSOs rely on industry standards published by SAE or RTCA. Those have been excluded since they are not publicly available (and they are not cheap).
+
+NASA standards have also been excluded since they do not stritcly belong to the same usage domain (my focus is aviation and NASA standars are almost never recommended).
+
+I did not scrap the FAA website since I anticipate that this would be rather redundant with [DRS](https://drs.faa.gov/). Some specific items like the [Rotorcraft Issues List](https://www.faa.gov/aircraft/air_cert/design_approvals/product_issues_lists/rotorcraft) are not on [DRS](https://drs.faa.gov/).
+
 ## Why aviation data
 The starting block of any ML project is getting intimately familiar with the data. Since I work in aviation (rotorcraft), I've a professional interest in knowing more about all types of documents (format and content) that the FAA produces (with a focus on rotorcrafts).
+
+Data collection and mining is systematically overlooked in most of the ML projects ([Conway's law](<https://en.wikipedia.org/wiki/Conway%27s_law)>)?), leading to post-training issues. So starting at data collection level is an interesting exercise for airborne application.
 
 From a pure ML perspective, aviation data offers lots of benefits:
 * because of the safety constraints, aviation structuraly produces lots of data in various format 
@@ -254,6 +262,30 @@ Expand on fine tuning based on [this](https://generallyintelligent.substack.com/
 Expand on Zero-shot with Gemini 1.5
 
 # ARP6983 Criteria Review
+
+## Minimum information to present to the regulator
+Based on FAA presentations and AC 20-166A.
+
+### Introduction
+Provide advisories related to general airworhiness aviation.
+
+### Data
+Data is real and distribution have been explored before. No data split here (~surrogate model). Data source is US GOV.
+
+### Data management
+Data stored as parquet files locally. With Haystack's RAG, it is using their [DocumentStore](https://docs.haystack.deepset.ai/docs/document_store).
+
+### System/Model Architecture
+Haystack's RAG.
+
+### Performance
+Only manual tests for now.
+
+### Tolerance and Performance Requirements
+No expectations.
+
+### Additional Justification
+RAG performs better than pure LLM for hallucination. Overall it is probably unacceptable since the HMI is the worse that it can be (pure texts).
 
 ## MLDL objectives
 
