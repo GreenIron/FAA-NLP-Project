@@ -368,6 +368,77 @@ RAG performs better than pure LLM for hallucination. Overall it is probably unac
 * *19 Security tag(s)*: I don't understand.
 * *20 Monitoring or Recording tag(s)*: I don't understand, but should be ensured by US gov.
 
+# [EASA Artificial Intelligence Concept Paper Issue 2 Guidance for Level 1 & 2 machine-learning applications](https://www.easa.europa.eu/en/downloads/139504/en)  - 2. Risk-based levelling of objectives
+
+## Trustworthiness analysis
+* **: 
+* **: 
+* **: 
+* **: 
+* **: 
+* **: 
+* **: 
+* **: 
+* **: 
+* **: 
+* **: 
+* **: 
+
+## AI assurance
+* **: 
+* **: 
+* **: 
+* **: 
+* **: 
+* **: 
+* **: 
+* **: 
+* **: 
+* **: 
+* **: 
+* **: 
+
+## Human factors for AI
+* **: 
+* **: 
+* **: 
+* **: 
+* **: 
+* **: 
+* **: 
+* **: 
+* **: 
+* **: 
+* **: 
+* **: 
+
+## Human Factors for AI
+* **: 
+* **: 
+* **: 
+* **: 
+* **: 
+* **: 
+* **: 
+* **: 
+* **: 
+* **: 
+* **: 
+* **: 
+
+## Safety risk mitigation 
+* **: 
+* **: 
+* **: 
+* **: 
+* **: 
+* **: 
+* **: 
+* **: 
+* **: 
+* **: 
+* **: 
+* **: 
 
 <!--
 # TODO
