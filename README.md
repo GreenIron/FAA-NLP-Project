@@ -256,14 +256,19 @@ Explain why I chose RAG (much better at not hallucinating),
 Explain why I chose [haystack.deepset.ai](https://haystack.deepset.ai/) over other ones ([SciPhi-AI](https://github.com/SciPhi-AI/R2R), [langchain](https://www.langchain.com/), [LlamaIndex](https://www.llamaindex.ai/), [Pinecone](https://www.pinecone.io/), [Weaciate](https://weaviate.io/)).
 
 #### LLM fine tuning
-Expand on fine tuning based on [this](https://generallyintelligent.substack.com/p/fine-tuning-mistral-7b-on-magic-the), [this](https://helixml.substack.com/p/how-we-got-fine-tuning-mistral-7b) or [this](https://www.oreilly.com/library/view/hands-on-large-language/9781098150952/).
+Expand on fine tuning based on [this](https://generallyintelligent.substack.com/p/fine-tuning-mistral-7b-on-magic-the), [this](https://helixml.substack.com/p/how-we-got-fine-tuning-mistral-7b) or [this](https://www.oreilly.com/library/view/hands-on-large-language/9781098150952/) and [this](https://www.answer.ai/posts/2024-03-06-fsdp-qlora.html).
+
 
 #### Gemini 1.5
 
-##### Zero-shot
+##### Zero-shot with no context window
+Using the promp.
+
+##### Zero-shot with context window
 Gemini 1.5 accepts windows of 1,048,576 tokens, which makes it possible to upload AC 27-1B (~1000 pages) and a few smaller ones.
 
-##### Fine-tuning.
+
+##### Fine-tuning with context window
 It is also possible to fine tune Gemini 1.5 via Google Vertex inteface.
 
 #### Results
