@@ -6,7 +6,7 @@ This is an in-work personal NLP project dealing with FAA documentation: use case
 # Introduction
 
 ## Motivation
-While aviation is a heavy producer of documentation, most of the aviation-related database publicly available on popular ML websites (kaggle, huggingface, google data) is about unformatted tabular data (e.g. accident rates, airport traffic, helicopter types) and not about NLP. In the same time legal has had a several datasets available. This is quite unusual considering that aviation data is very good at producing complex, high-quality and standardized documents or more generally any sorts of communication (e.g. GAMA standards, ATC standards).
+While aviation is a heavy producer of documentation, most of the aviation-related database publicly available on popular ML websites (kaggle, huggingface, google data) is about unformatted tabular data (e.g. accident rates, airport traffic, helicopter types) and not about NLP. In the same time legal has had a several datasets available. This is quite unusual considering that aviation data is very good at producing complex, high-quality and standardized documents or more generally any sorts of communication (e.g. GAMA standards, ATC standards, Aeronautical Charts, Obstacle database).
 
 While it takes at least 10 years for a commercial-level technology to hit aviation, data has been at the core of airborne aviation for a lot quite some times (CVFDR, telemetry...). FAA has been offering for several years a modern and powerful platform to browse all the publicly available FAA documentation: [DRS](https://drs.faa.gov/). This platform offers tremendous capabilities and an API (one of the many DOT platforms) to programaticaly acccess its documentation.
 
@@ -265,8 +265,7 @@ Expand on fine tuning based on [this](https://generallyintelligent.substack.com/
 Using the promp.
 
 ##### Zero-shot with context window
-Gemini 1.5 accepts windows of 1,048,576 tokens, which makes it possible to upload AC 27-1B (~1000 pages) and a few smaller ones.
-
+Gemini 1.5 accepts windows of 1M long tokens, which makes it possible to upload AC 27-1B (~1000 pages) and a few smaller ones.
 
 ##### Fine-tuning with context window
 It is also possible to fine tune Gemini 1.5 via Google Vertex inteface.
@@ -274,10 +273,11 @@ It is also possible to fine tune Gemini 1.5 via Google Vertex inteface.
 #### Results
 
 
+# Design Assurance
 
-# [ARP6983](https://www.sae.org/standards/content/arp6983/) Criteria Review
+## Introduction
 
-## Minimum information to present to the regulator
+### Minimum information to present to the regulator
 Based on FAA presentations and AC 20-166A.
 
 ### Introduction
@@ -301,201 +301,152 @@ No expectations.
 ### Additional Justification
 RAG performs better than pure LLM for hallucination. Overall it is probably unacceptable since the HMI is the worse that it can be (pure texts).
 
-## MLDL objectives
+## [ARP6983](https://www.sae.org/standards/content/arp6983/) Criteria Review
+
+### MLDL objectives
 
 ### 1 ML Constituent ODD
 * *1.1 The MLCODD is characterized*: Yes. The ODD is actually explicitly defined in the dataset itself for most of it. Otherwise it is detailed on the FAA website.
-* *1.2 AN ML Data impact analysis is developed from the MLCODD*: Unclear?
-* *1.3 Any limitation of use to the ML-based System/Subsystem processes is provided, including the System Safety Assessment process*: None.
-
-### 2 ML Constituent Requirements
-* *2.1 ML Constituent requirements are developed for each ML Constituent*: 
-* *2.2 Derived ML Constituent requirements are defined and provided to the ML-based System/Subsystem processes, including the System Safety Assessment process*:
 
 ### 3 ML Environment Set Up
 * *3.1 The MLDL environment is selected and defined*: Based on conda [`environment.yml`](https://conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html#activating-an-environment).
 
 ### 4 ML Data Management
 * *4.1 Data sources are identified and selected*: Yes (DRS).
-* *4.1 Lack of undesirable bias is ensured*: Should be N/A.
-* *4.3 Data required for training, validation, and test datasets is collected*: Yes (DRS).
-* *4.4 Data has specified characteristics (such as representativeness, sufficiency, fairness, etc.)*: Yes (DRS).
 * *4.5 Data are cleaned up and enhanced and can be used by the ML algorithm without any additional checking*: Yes (basic cleaning). One difficulty is that the raw data (pdf) are not usable as is and need to be decoded.
-* *4.6 Requirements allocated to the ML Data are satisfied*:
-* *4.7 Data pre-processing description is updated*: Yes.
-* *4.8 Data leakage is avoided*: Yes (ensured by data source)*: Yes.
-* *4.9 Input dataset is divided into three datasets for training, validation, and test*:
-
-### 5 ML Model Design Model
-* *5.1 The ML Model architecture is developed from the ML Constituent requirements*:
-* *5.2 ML Model requirements are developed from the ML Constituent requirements and the ML  environment*:
-* *5.3 Derived ML Model requirements and their rationale are defined and provided to the ML Constituent requirements process*:
-* *5.4 The ML Model is built, trained, and optimized from the ML Constituent requirements and if applicable from the ML Model requirements*:
-* *5.5 ML Model Description is developed from the ML Model to describe its architecture, its hyperparameters and parameters, its analytical/algorithmic syntax and semantic, its replication criteria, and its execution environment*:
-
-### 6 ML Validation
-* *6.1 ML Model requirements comply with system/subsystem requirements*: No (no specification).
-* *6.2 ML Model requirements are accurate and consistent*: No (no specification).
-* *6.3 ML Model requirements are compatible with the target computer*: No (no specification).
-* *6.4 Data processing description is compatible with the target computer*: No (no specification).
-* *6.5 ML Model requirements are verifiable*: No (no specification).
-* *6.6 ML Model requirements conform to standards*: No (no specification).
-* *6.7 ML Model requirements are traceable to system/subsystem requirements*: No (no specification).
-* *6.8 ML Model Architecture Verification*: I don't understand.
-* *6.9 The ML architecture is compatible with the ML Model requirements*: No (no specification).
-* *6.10 The ML architecture is consistent*: I don't understand.
-* *6.11 The ML architecture is verifiable*: I don't understand.
-* *6.12 The ML architecture conforms to standards*: Yes, RAG architecture.
 
 ### 7 ML Model Verification
 * *7.1 The ML Model complies with the ML Model requirements*: [impossibble since Hallucination is Inevitable: An Innate Limitation of Large Language Models](https://arxiv.org/abs/2401.11817)
-* *7.2 The ML Model is accurate and consistent*:
-* *7.3 The ML Model is compatible with target computer*: No target computer.
 * *7.4 The ML Model is verifiable*: It's minimized, see [Retrieval Augmentation Reduces Hallucination in Conversation](https://arxiv.org/abs/2104.07567) and 
 [Chain-of-Thought Prompting Elicits Reasoning in Large Language Models](https://arxiv.org/abs/2201.11903).
 * *7.5 The ML Model conforms to standards*: Yes (reuse of state-of-the-art RAG).
 * *7.6 Verification of verification procedures*: No. But [Automated Unit Test Improvement using Large Language Models at Meta](https://arxiv.org/abs/2402.09171) 
-* *7.7 Test procedures are correct*: No.
-* *7.8 Test results are correct, and discrepancies explained*: No.
-* *7.9 Test coverage of ML Data and Model requirements is achieved*:  No.
-* *7.10 Test coverage of ML Model structure to the appropriate coverage criteria is achieved*: No.
 
 ## Data quality learning assurance objectives
 * *1 Nature of data (explicit definition of input variables)*: Textual with metadata (dates and categorical)
 * *2 Ranges of data (minimum and maximum value, classes of categorical data)*: Can be achieved with a [`describe`](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.describe.html) or [`unique`](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Index.unique.html#pandas.Index.unique).
 * *3 Representativeness: distribution of data across MLCODD [numerical values distribution, flight or operating condition, ambient condition indicator (e.g., day temperature for a pressure sensor, day, or night indicator for an image, rain, or dust level, etc.)]*: by design the data is rather exhaustive, but missing other commercial standards that are FAA accepted (SAE, ASTM, MIL-SPEC, RTCA).
-* *4 Fairness (lack of bias)*: Yes, based on FAA objectives (by data source).
-* *5 Acceptable data sources and Source tag*: Yes (US Gov).
-* *6 Accuracy*: Yes (by data source).
-* *7 Resolution (Precision)*: Not applicable.
-* *8 Sufficiency: Minimum acceptable size for datasets*: Yes for anything that does not require an issue paper.
-* *9 Criteria for data cleansing and denoising (missing data, out-of-distribution data)*: Unclear.
-* *10 Criteria for data transformation*: N/A.
 * *11 Criteria for data augmentation, if applicable*: For NLP, data aurgmentation relies on the use of synomics, back-translations, regeneration...
-* *12 Criteria for data annotation, if applicable*: N/A.
 * *13 Criteria for data segregation (training, validation, and verification datasets)*: Not different from standard practives.
 * *14 Assurance Level*: N/A (DAL E).
-* *15 Traceability to system level*: Not compliant.
 * *16 Timeliness (Time stamp)*: FAA regularly cancels its publications, so there are mechanism against data drifts.
 * *17 Completeness (statistically significant data to cover input space and OOD as per System/subsystem Level Requirements)*: By design the data is rather exhaustive, but missing other commercial standards that are FAA accepted (SAE, ASTM, MIL-SPEC, RTCA).
 * *18 Format of dataset files*: Pandas [`dataframe`](https://pandas.pydata.org/pandas-docs/stable/reference/frame.html#dataframe).
-* *19 Security tag(s)*: I don't understand.
 * *20 Monitoring or Recording tag(s)*: I don't understand, but should be ensured by US gov.
 
 # [ARP6983](https://www.sae.org/standards/content/arp6983/) Criteria Review 5b
-Those objectives are not systematically applicable. The complete ARP 6983 is required to understand the context.
+This compliance assessment is a projection (is it attainable?) and I'm doing it mostly for myself. RAG is made of two MLCs: vector database embedding and LLM.
 
 ## SYSTEM DOMAIN AND ML CONSTITUENT OBJECTIVES
 
-* *5.1 The MLC development is defined in the context of the applicable system-layer development and/or assurance process*: .
-* *5.2 The MLC is assessed using the applicable system safety process*: .
-* *5.3 The system architecture is developed considering the characterization of the MLC ODD and the MLC behaviors resulting from applying the ML development lifecycle*: .
-* *5.4 Performance requirements based on metrics including acceptance targets, necessary thresholds, and limits are established to satisfy the safety requirements allocated to an MLC*: .
-* *5.5 The system layer defines the attributes of the operating environment to a level of detail that is necessary to support MLC ODD characterization*: .
-* *5.6 The MLC, when implemented in the system, is verified to perform as intended in its allocated operating environment*: .
+* *5.1 The MLC development is defined in the context of the applicable system-layer development and/or assurance process*: Compliant.
+* *5.2 The MLC is assessed using the applicable system safety process*: Compliant.
+* *5.3 The system architecture is developed considering the characterization of the MLC ODD and the MLC behaviors resulting from applying the ML development lifecycle*: Compliant.
+* *5.4 Performance requirements based on metrics including acceptance targets, necessary thresholds, and limits are established to satisfy the safety requirements allocated to an MLC*: Not compliant. LLM metrics can be very unsatisfactory due to the subjectivity of text.
+* *5.5 The system layer defines the attributes of the operating environment to a level of detail that is necessary to support MLC ODD characterization*: Compliant. Training envirronment is defined in conda [`environment.yml`](https://conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html#activating-an-environment).
+* *5.6 The MLC, when implemented in the system, is verified to perform as intended in its allocated operating environment*: Compliant.
 
 ## MLDL OBJECTIVES AND OUTPUTS
 
 ### Objectives for MLC Requirements Process
 
-* *1 MLCRs are developed from the system/subsystem requirements*: .
-* *2 The ML Constituent architecture is developed into MLCRs from the system/subsystem requirements including the system/subsystem architecture*: .
-* *3 The MLC ODD is Characterized from the system/subsystem requirements and derived requirements coming from the other MLDL processes*: .
-* *4 DQRs are developed as part of the MLCRs from the system/subsystem requirements and the MLC ODD characterization*: .
-* *5 Derived MLCRs, including derived DQRs, are defined and provided to the System/Subsystem processes, including the System Safety Assessment process*: .
+* *1 MLCRs are developed from the system/subsystem requirements*: Compliant if we consider RAG as being a COTS reused (COTS has to be well documented).
+* *2 The ML Constituent architecture is developed into MLCRs from the system/subsystem requirements including the system/subsystem architecture*: Compliant.
+* *3 The MLC ODD is Characterized from the system/subsystem requirements and derived requirements coming from the other MLDL processes*: Compliant.
+* *4 DQRs are developed as part of the MLCRs from the system/subsystem requirements and the MLC ODD characterization*: Compliant.
+* *5 Derived MLCRs, including derived DQRs, are defined and provided to the System/Subsystem processes, including the System Safety Assessment process*: Compliant.
 
 ### Objectives for ML Data Management Process
 
-* *1 ML Data Requirements are developed from the ML Constituent requirements*: .
-* *2 Derived ML Data requirements are defined and provided to system/subsystem processes, including the system safety assessment process*: .
-* *3 Data sources are identified and selected*: .
-* *4 Data are collected and corresponding data processing code is developed*: .
-* *5 Data are prepared and corresponding data processing code is developed*: .
-* *6 Data are labelled*: .
-* *7 Data processing description is developed*: .
-* *8 Data are allocated to training and validation datasets*: .
-* *9 Data are allocated to test dataset(s) including scenario-based dataset if needed*: .
+* *1 ML Data Requirements are developed from the ML Constituent requirements*: Compliant. Retrospective definition based on FAA's DRS API.
+* *2 Derived ML Data requirements are defined and provided to system/subsystem processes, including the system safety assessment process*: Compliant.
+* *3 Data sources are identified and selected*: Yes (DRS).
+* *4 Data are collected and corresponding data processing code is developed*: Compliant.
+* *5 Data are prepared and corresponding data processing code is developed*: Compliant.
+* *6 Data are labelled*: Compliant.
+* *7 Data processing description is developed*: Compliant.
+* *8 Data are allocated to training and validation datasets*: Compliant.
+* *9 Data are allocated to test dataset(s) including scenario-based dataset if needed*: Compliant.
 
 ### Objectives for ML Model Design Process
 
-* *1 The ML Model architecture is developed from the ML Constituent requirements*: .
-* *2 ML Model requirements are developed from the ML Constituent requirements*: .
-* *3 Derived ML Model requirements are defined and provided to system/subsystem processes, including the system safety assessment process*: .
-* *4 The ML Model is developed*: .
-* *5 The ML Model Description is developed*: .
+* *1 The ML Model architecture is developed from the ML Constituent requirements*: Compliant if we consider RAG as being a COTS reused (COTS has to be well documented).
+* *2 ML Model requirements are developed from the ML Constituent requirements*: Compliant if we consider RAG as being a COTS reused (COTS has to be well documented).
+* *3 Derived ML Model requirements are defined and provided to system/subsystem processes, including the system safety assessment process*: Compliant.
+* *4 The ML Model is developed*: Compliant.
+* *5 The ML Model Description is developed*: Compliant.
 
 ### Objectives for Validation of Outputs of MLC Requirements Process
 
-* *1 MLCRs comply with system/subsystem requirements*: .
-* *2 MLCRs are traceable to system/subsystem requirements or identified as derived MLCRs which are provided to system/subsystem processes including the system safety assessment process*: .
-* *3 MLCRs are accurate and consistent. The objective isto ensure that each MLCRs  is accurate, unambiguous, and sufficiently detailed, and that MLCRs do not conflict with each other*: .
-* *4 MLCRs are verifiable*: .
-* *5 MLCRs conform to standards*: .
+* *1 MLCRs comply with system/subsystem requirements*: Compliant, could be defined retrospectively.
+* *2 MLCRs are traceable to system/subsystem requirements or identified as derived MLCRs which are provided to system/subsystem processes including the system safety assessment process*: Not Compliant.
+* *3 MLCRs are accurate and consistent. The objective is to ensure that each MLCRs  is accurate, unambiguous, and sufficiently detailed, and that MLCRs do not conflict with each other*: Not Compliant, possible overlap between vector database embedding and LLM.
+* *4 MLCRs are verifiable*: Compliant.
+* *5 MLCRs conform to standards*: Compliant.
 
 ### Objectives for Validation of ML Data Requirements Produced by ML Data Management Process
 
-* *1 ML data requirements comply with MLCRs*: .
-* *2 ML data requirements areeither traceable to MLCRs or identified as derived ML data requirements which are provided to system/subsystem processes including the system safety assessment 
-process*: .
-* *3 ML data requirements are accurate and consistent*: .
-* *4 ML data requirements and ML Model requirements are consistent*: .
-* *5 ML data requirements conform to standards*: .
+* *1 ML data requirements comply with MLCRs*: Compliant.
+* *2 ML data requirements are either traceable to MLCRs or identified as derived ML data requirements which are provided to system/-subsystem processes including the system safety assessment process*: Compliant.
+* *3 ML data requirements are accurate and consistent*: Compliant.
+* *4 ML data requirements and ML Model requirements are consistent*: Compliant.
+* *5 ML data requirements conform to standards*: Compliant.
 
 ### Objectives for Validation of ML Model Requirements Produced by ML Model Design Process
 
-* *1 ML Model requirements comply with MLCRs*: .
-* *2 ML Modelrequirements are either traceable to MLCRs or identified as derived ML Model requirements which are provided to system/subsystem processes including the system safety assessment process*: .
-* *3 ML Model requirements are accurate and consistent*: .
-* *4 ML Model requirements and ML data requirements are consistent*: .
-* *5 ML Model requirements conform to standards*: .
+* *1 ML Model requirements comply with MLCRs*: Not Compliant because of LLM.
+* *2 ML Model requirements are either traceable to MLCRs or identified as derived ML Model requirements which are provided to system/subsystem processes including the system safety assessment process*: .
+* *3 ML Model requirements are accurate and consistent*: Not Compliant.
+* *4 ML Model requirements and ML data requirements are consistent*: Compliant.
+* *5 ML Model requirements conform to standards*: Compliant.
 
 ### Objectives for Verification of Output of ML Data Management Process
 
-* *1 Identified and selected data sources comply to MLCRs including DQRs and if applicable ML data requirements*: .
-* *2 Collected data comply with MLCRs including DQRs and if applicable ML data requirements*: .
-* *3 Prepared data comply to MLCRs including DQRs and if applicable ML data requirements*: .
-* *4 Labels of prepared data comply with MLCRs including DQRs and if applicable ML data requirements*: .
-* *5 Labels of prepareddata conform to ML data design standards*: .
-* *6 Data processing complies with MLCRs (including DQRs and MLC architecture) and if applicable ML data requirements*: .
-* *7 Data processing description is traceable to ML data processing*: .
-* *8 Data processing description conforms to ML data design standards*: .
-* *9 Training and validation datasets comply with ML data requirements*: .
-* *10 Test datasets comply with MLCRs including applicable DQRs and if applicable ML data requirements*: .
-* *11 Training and validation datasets are traceable to ML data requirements*: .
-* *12 Test datasets and other ML verification artefacts are traceable to MLCRs including DQRs and if applicable ML data requirements*: .
+* *1 Identified and selected data sources comply to MLCRs including DQRs and if applicable ML data requirements*: Compliant.
+* *2 Collected data comply with MLCRs including DQRs and if applicable ML data requirements*: Compliant.
+* *3 Prepared data comply to MLCRs including DQRs and if applicable ML data requirements*: Compliant.
+* *4 Labels of prepared data comply with MLCRs including DQRs and if applicable ML data requirements*: Compliant.
+* *5 Labels of prepareddata conform to ML data design standards*: Compliant.
+* *6 Data processing complies with MLCRs (including DQRs and MLC architecture) and if applicable ML data requirements*: Compliant.
+* *7 Data processing description is traceable to ML data processing*: Compliant.
+* *8 Data processing description conforms to ML data design standards*: Compliant.
+* *9 Training and validation datasets comply with ML data requirements*: Compliant.
+* *10 Test datasets comply with MLCRs including applicable DQRs and if applicable ML data requirements*: Compliant.
+* *11 Training and validation datasets are traceable to ML data requirements*: Compliant.
+* *12 Test datasets and other ML verification artefacts are traceable to MLCRs including DQRs and if applicable ML data requirements*: Compliant.
 
 ### Objectives for Verification of Outputs of ML Model Design Process
 
-* *1 ML Model architecture is compatible with MLCRs and if applicable with ML data requirements and ML Model requirements*: .
-* *2 ML Model architecture is consistent*: .
-* *3 ML Model architecture conforms to ML Model design standards*: .
-* *4 ML Model complies with MLCRs (including MLC architecture) and if applicable ML Model requirements*: .
-* *5 ML Model complies with ML Model architecture*: .
-* *6 ML Model conforms to ML Model design standards*: .
-* *7 ML Model (elements) is (are) consistent*: .
-* *8 ML Model bias and variance are optimized*: .
-* *9 ML Model generalization on in-sample data complies with MLCRs*: .
-* *10 ML Model generalization on out-of-sample data complies with ML Model requirements*: .
-* *11 ML Model is stable with MLCRs and if applicable ML Model requirements*: .
-* *12 ML Model is robust with MLCRs and if applicable ML Model requirements*: .
-* *13 ML Model description is traceable to ML Model*: .
-* *14 ML Model description and ML data processing description are consistent*: .
-* *15 ML Model description conforms to ML Model design standards*: .
-* *16 ML Constituent is robust to outliers*: .
-* *17 ML Constituent is robust to novelties*: .
-* *18 ML Constituent is robust to data, concept, and performance drifts*: .
+* *1 ML Model architecture is compatible with MLCRs and if applicable with ML data requirements and ML Model requirements*: Not Compliant (LLM, vector embedding).
+* *2 ML Model architecture is consistent*: Not Compliant.
+* *3 ML Model architecture conforms to ML Model design standards*: Compliant.
+* *4 ML Model complies with MLCRs (including MLC architecture) and if applicable ML Model requirements*: Not Compliant.
+* *5 ML Model complies with ML Model architecture*: Compliant.
+* *6 ML Model conforms to ML Model design standards*: Compliant.
+* *7 ML Model (elements) is (are) consistent*: Compliant.
+* *8 ML Model bias and variance are optimized*: Compliant.
+* *9 ML Model generalization on in-sample data complies with MLCRs*: Compliant.
+* *10 ML Model generalization on out-of-sample data complies with ML Model requirements*: Compliant.
+* *11 ML Model is stable with MLCRs and if applicable ML Model requirements*: Not Compliant.
+* *12 ML Model is robust with MLCRs and if applicable ML Model requirements*: Not Compliant.
+* *13 ML Model description is traceable to ML Model*: Compliant.
+* *14 ML Model description and ML data processing description are consistent*: Compliant.
+* *15 ML Model description conforms to ML Model design standards*: Compliant.
+* *16 ML Constituent is robust to outliers*: Not Compliant.
+* *17 ML Constituent is robust to novelties*: Compliant.
+* *18 ML Constituent is robust to data, concept, and performance drifts*: Compliant.
 
 ### Objectives for Verification of Results of ML Verification Process
 
-* *1 Test procedures are correct*: .
-* *2 Test procedures are traceable to test cases*: .
-* *3 Verification results are correct, and discrepancies are explained*: .
-* *4 Test results are traceable to test procedures*: .
-* *5 Verification coverage of MLCRs is achieved*: .
-* *6 Verification coverage of ML data requirements is achieved*: .
-* *7 Verification coverage of ML Model requirements is achieved*: .
-* *8 Verification coverage of MLC/MLM ODD is achieved*: .
-* *9 ML Model explainability analysis is achieved*: .
+* *1 Test procedures are correct*: Compliant.
+* *2 Test procedures are traceable to test cases*: Compliant.
+* *3 Verification results are correct, and discrepancies are explained*: Compliant.
+* *4 Test results are traceable to test procedures*: Compliant.
+* *5 Verification coverage of MLCRs is achieved*: Not Compliant.
+* *6 Verification coverage of ML data requirements is achieved*: Not Compliant.
+* *7 Verification coverage of ML Model requirements is achieved*: Not Compliant.
+* *8 Verification coverage of MLC/MLM ODD is achieved*: Compliant.
+* *9 ML Model explainability analysis is achieved*: Not Compliant.
 
 # Risk-based levelling of objectives from [EASA Artificial Intelligence Concept Paper Issue 2 Guidance for Level 1 & 2 machine-learning applications](https://www.easa.europa.eu/en/downloads/139504/en)
 
@@ -639,86 +590,3 @@ process*: .
 * *IS-02 The applicant should document a mitigation approach to address the identified AI/ML-specific security risk*: .
 * *IS-03 The applicant should validate and verify the effectiveness of the security controls introduced to mitigate the identified AI/ML-specific security risks to an acceptable level*: .
 
-
-
-<!--
-# TODO
-* Reorganiser le cod le code
-* Relancer tout
-* faire la database de texte
-* faire des use case?
-  * classification? classification en utilisant DRS Document Types Metadata Mapping(1) => stc_collection_test_offset=1250.xlsx
-  * generation?
-* pdf to text avec google vision pour tous les docs
-* qui limite à une certaine mod d'helico
-* trouver un vrai use case avec lequel il y a un vrai pattern
-* statistics on desctiption legnth (# of words)
-* statistics on Limitations and Condition (# of words and sentences)
-* classifier pour les ATA, avec les ATA les plus classiques
-* STC content (limitations/correl;ations):
-  * verifier si les deux sont anticorr'lé
-  * améliore l'algo d'extraction des limitatiosn te confdisiotn
-* faire rounite d'extraction de paragraphes -> 92
-  * outline du pdf
-  * regex https://regex101.com/
-  * figures
-  * si bookmark correspiond pas a un vrai titre
-  * faire nested liste ou ien juste flat avec toute l'arbo...
-  * faire un regex pour extraire le mocreau de texte.
-  * pattern utiles pour detection de title (initial):
-    * extraction de la ToC depuis pdf plnuimber
-    * Excellent:
-      * début de phrase
-      * Phrase avec peu de mots
-      * parttern tres recurent suitnt le type de doc
-    * Bon marqueur:
-      * En gras
-      * majuscule
-      * deux points
-    * Moyen marqueur:
-      * keyword connus
-      * point final 
-    * En vrac:
-      * En gras
-      * keyword connus
-      * peu de mots
-      * fini sans un point final
-      * majuscule
-      * saut de ligne avant, mais pas apres
-      * parttern tres recurent suitnt le type de doc
-      * des fois des deux points
-    * Examples:
-      * (6) Training on Records.
-      * 21. PASSENGER AND CARGO LOADING PROCEDURES. 
-      * (1) Loading, based on aircraft configuration, i.e.,....
-      * 1. Purpose.
-      * Purpose: This InFO informs air carriers of the availability of the Department of Transportation’s (DOT) National Aviation Resource Manual for Quarantinable Diseases. 
-      * SUBJECT: DOT
-
-## TODO:
-* STC content (limitations/correl;ations):
-  * refaire une analyse avec google vision sur fichiers qui ont d'econne seulement: le faire avec les filters. Se faire un fichier excel pour releceture plus simple
-* Identify pdfs requiring google vision by type: STC, CAR, 
-* Retrieve additional attachment (xml, html, doc, docs, xls, xlsx). Not sure since not additional info.
-* faire classifier d'ATA et l'appliquer sur les STC
-* identifier un use case pour le STC:
-  * pas simple, pas vraiment d'apprentissage car peu de lien entre les différents paragraphes
-  * OK pour statistique explicatives:
-    * où est-ce qu'il y a les ICA et FMS
-    * où est-ce que la hrase générique d'incompatibilité
-    * lien entre ACO et ODA
-    * conbien listent les ICA et FMS en lim vs conteniu du design change
-    * diversité des l;imitationms listées
-    * limitation à une mod d h;élico
-  * faire de la génération? 
-* Use case sur tout le DRS:
-  * faire classifier général sur tout avec remplacement de mots
-  * découper les paragraphes
-  * un bon use case est de bosser sur des bons doc qui sont des guidance
-* Use pour un sous-ensemble du DRS:
-  * doc de qualit'e: order, AC, 
-  * outline/bookmark dispo
-  * doc a partir desquels on peut faire decoupage question/reponse par paragrahe
-* Check compliance against 1000.36 -> needs to be translated from rules to examples.
- * peut-etre que les modeles existants permettent de faire du zero-shot dessus?
- -->
