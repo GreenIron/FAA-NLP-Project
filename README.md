@@ -8,22 +8,16 @@ This is an in-work personal NLP project dealing with FAA documentation: use case
 ## Motivation
 While aviation is a heavy producer of documentation, most of the aviation-related database publicly available on popular ML websites (kaggle, huggingface, google data) is about unformatted tabular data (e.g. accident rates, airport traffic, helicopter types) and not about NLP. In the same time legal has had a several datasets available. This is quite unusual considering that aviation data is very good at producing complex, high-quality and standardized documents or more generally any sorts of communication (e.g. GAMA standards, ATC standards, Aeronautical Charts, Obstacle database).
 
-While it takes at least 10 years for a commercial-level technology to hit aviation, data has been at the core of airborne aviation for a lot quite some times (CVFDR, telemetry...). FAA has been offering for several years a modern and powerful platform to browse all the publicly available FAA documentation: [DRS](https://drs.faa.gov/). This platform offers tremendous capabilities and an API (one of the many DOT platforms) to programaticaly acccess its documentation.
-
-I truely encourage you to take a look at it right now since this will be the primary source of data.
-
-Non-governmental platforms like [AHST](https://ushst.org/) offer also high quality documentation (this one on helicopter safety), but have no API.
-
-Most of the ACs and TSOs rely on industry standards published by SAE or RTCA. Those have been excluded since they are not publicly available (and they are not cheap).
-
-NASA standards have also been excluded since they do not stritcly belong to the same usage domain (my focus is aviation and NASA standars are almost never recommended).
-
-I did not scrap the FAA website since I anticipate that this would be rather redundant with [DRS](https://drs.faa.gov/). Some specific items like the [Rotorcraft Issues List](https://www.faa.gov/aircraft/air_cert/design_approvals/product_issues_lists/rotorcraft) are not on [DRS](https://drs.faa.gov/).
+While it takes at least 10 years for a commercial-level technology to hit aviation, data has been at the core of airborne aviation for a lot quite some times (CVFDR, telemetry...). FAA has been offering for several years a modern and powerful platform to browse all the publicly available FAA documentation: [DRS](https://drs.faa.gov/). This platform offers tremendous capabilities and an API (one of the many DOT platforms) to programaticaly acccess its documentation. I truely encourage you to take a look at it right now since this will be the primary source of data. What I've excluded from my search:
+* Non-governmental platforms like [AHST](https://ushst.org/) offer also high quality documentation (this one on helicopter safety), but have no API.
+* Most of the ACs and TSOs rely on industry standards published by SAE or RTCA. Those have been excluded since they are not publicly available (and they are not cheap).
+* NASA standards have also been excluded since they do not strictly belong to the same usage domain (my focus is aviation and NASA standards are almost never recommended).
+I did not scrap the FAA website (for this project) since I anticipate that this would be rather redundant with [DRS](https://drs.faa.gov/). Some specific items like the [Rotorcraft Issues List](https://www.faa.gov/aircraft/air_cert/design_approvals/product_issues_lists/rotorcraft) are not on [DRS](https://drs.faa.gov/).
 
 ## Why aviation data
 The starting block of any ML project is getting intimately familiar with the data. Since I work in aviation (rotorcraft), I've a professional interest in knowing more about all types of documents (format and content) that the FAA produces (with a focus on rotorcrafts).
 
-Data collection and mining is systematically overlooked in most of the ML projects ([Conway's law](<https://en.wikipedia.org/wiki/Conway%27s_law)>)?), leading to post-training issues. So starting at data collection level is an interesting exercise for airborne application.
+Data collection and mining is systematically overlooked in most of the ML projects ([Conway's law](<https://en.wikipedia.org/wiki/Conway%27s_law>)?), leading to post-training issues. So starting at data collection level is an interesting exercise for airborne application.
 
 From a pure ML perspective, aviation data offers lots of benefits:
 * because of the safety constraints, aviation structuraly produces lots of data in various format 
@@ -33,7 +27,7 @@ From a pure ML perspective, aviation data offers lots of benefits:
 And more specifically for the text documents released by the FAA:
 * FAA offers a powerful API
 * FAA documents are well formatted (Q&A tables, consistent tables of content)
-* FAA documents have a high quality standard (Order 1000.36) compared to the best NLP dataset that one can find on Hugging Face. The notably natively include ["chain of thoughts"](https://arxiv.org/pdf/2201.11903.pdf)-like answers.
+* FAA documents have a high quality standard (check FAA Order 1000.36) compared to the best NLP dataset that one can find on Hugging Face. Some notably natively include ["chain of thoughts"](https://arxiv.org/pdf/2201.11903.pdf)-like answers.
 
 Overall I ended with the following datasets ([parquet](https://parquet.apache.org/) format):
 * STCs with metadata, extracted description and limitations/conditions (~50MB)
@@ -218,14 +212,16 @@ I wanted to analyse the documentary inflation over the years, but I stopped sinc
 ![plot](./images/27_token_distr_orders.png)
 
 ## ML applications
-The size of the dataset makes the project intractable on my personal computer, so I decided to narrow-down the usage domain.
+The dataset size makes the project intractable on my personal computer, so I decided to narrow-down the usage domain.
 
-As far as I know there are several ways to work on a document with LLM : pass the document corpus in the context window (only available on cloud-based solutions - extremely resource intensive during training and inference), LLM fine-tuning (corpus is virtually stored in the weights - very resource intensive during training), RAG (corpus is stored in a flexible database - manageable with a personal computer).
+As far as I know there are several ways to work on a document with LLM : pass the document corpus in the context window (only available on cloud-based solutions - extremely resource intensive during training and inference), LLM fine-tuning (corpus is virtually stored in the weights - very resource intensive during training), RAG (corpus is stored in a flexible database - manageable with a personal computer) or zero-shot.
 
-I use the following format for the prompt:
+I used the following format for the prompt:
 * *role*: you are an expert in all aspects of operations, airworthiness and certification for rotorcraft and airplanes including maintenance and engineering.
 * *task*: you provide detailed guidance to an applicant or an operator.
 * *context*: rotorcraft and airplanes operations and airworthiness in United States National Airspace. You are using information from the following types of document: Aeronautical Information Publication (AIP), Aeronautical Information Manual (AIM), Advisory Circulars (AC), FAA Orders, FAA Order Handbooks, Federal Aviation Regulations (Title 14 CFR FAR).
+
+I performed only a manual assessment and for this reasons, I will not publish my findings (not statistically significant).
 
 ### Working with a subset: AC, ORDER, HANDBOOK, AIP, AIM, FAR
 The DRS database is made of various document types that do not belong to the same usage domain (e.g. space travels vs. civil flights). Some documents are also a mere database (e.f. PMA).
@@ -248,12 +244,12 @@ We end up with the majority of documents below 5000 tokens (see histogram below)
 RAG is well-suited when there is a large and well-defined usage domain/corpus. It does better than a pure LLM hallucination ([Retrieval Augmentation Reduces Hallucination in Conversation](https://arxiv.org/abs/2104.07567)) and providing sourced answers (by design unlike LLMs). See [nlp book](https://www.oreilly.com/library/view/natural-language-processing/9781098136789/) for a good introduction.
 I picked [haystack.deepset.ai](https://haystack.deepset.ai/) over other ones similar free solutions ([SciPhi-AI](https://github.com/SciPhi-AI/R2R), [LlamaIndex](https://www.llamaindex.ai/).
 
-I initially explored options to fine-tune the LLM, but the cost even for a 7B LLM was not acceptable for a pet project. Most importantly I didn't have the appropriate data for fine-tuning and developping such a dataset was out of scope.
+I initially explored options to fine-tune the LLM, but I dropped the idea because of the cost for 7B LLM and I didnt have appropriate data for fine-tuning (e.g. alpaca).
 
 #### [Gemini](./55_Gemini.ipynb)
 
 ##### Zero-shot with no context window
-I used the Gemini with no context to ask a series of aeronautic questions.
+I used the Gemini with no context to ask a series of questions within the previous usage domain.
 
 ##### Zero-shot with context window
 Gemini 1.5 accepts windows of 1M long tokens, which makes it possible to use the dataset from DRS or complete ACs. This approach proved to be a dead-end for understandable reasons (a LLM cannot compete with a vector database).
